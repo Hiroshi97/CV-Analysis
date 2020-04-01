@@ -1,0 +1,20 @@
+{% extends 'base.html' %} 
+{% block header %}
+<h1>{% block title %}Upload{% endblock %}</h1>
+{% endblock %} 
+
+{% block content %}
+<form action="api/result" method="POST" enctype="multipart/form-data">
+    <div>
+        <!-- <label>Drag your files here or click in this area.</label> -->
+        <input type = "file" accept = ".pdf" name = "cvfile" multiple/>
+    </div>
+    <div>
+        <input type="submit" value="Upload"/>
+    </div>
+</form>
+{% endblock %}
+
+<script type="text/javascript">
+    
+</script>
