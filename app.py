@@ -1,5 +1,6 @@
 #PDF Lib
 import io
+import pdfminer
 from pdfminer.converter import *
 from pdfminer.pdfinterp import PDFPageInterpreter
 from pdfminer.pdfinterp import PDFResourceManager
@@ -14,8 +15,10 @@ from pdfminer.layout import LAParams, LTTextBox, LTTextLine
 from pdfminer.pdfdevice import PDFDevice
 import PyPDF2
 import string
+
 #Grammar & Spelling Lib
 import pylanguagetool
+import nltk
 
 # Flask initialization
 from flask import *
@@ -36,27 +39,34 @@ def index():
 def process():
     if request.method == 'POST':
         f = request.files['cvfile']
-        text = convert_pdfminer(f)
-        return text
-        #return render_template("process.html", text = text)
+        text = extract_text_from_pdf(f)
+        word_count = len(text.split())
+        text_array = text.strip().split('\n')
+        for i in range (len(text_array)):
+            text_array[i] = "<p>" + text_array[i] + "</p>"
+        
+        text = Markup(''.join(text_array))
+        return render_template("result.html", text=text, word_count = word_count)
 
+def extract_text_from_pdf(file):
+    resource_manager = PDFResourceManager()
+    fake_file_handle = io.StringIO()
+    converter = TextConverter(resource_manager,
+                              fake_file_handle)
+    page_interpreter = PDFPageInterpreter(resource_manager, converter)
 
-def convert_pdfminer(fp):
-    parser = PDFParser(fp)
-    doc = PDFDocument(parser)
-    rsrcmgr = PDFResourceManager()
-    laparams = LAParams()
-    device = PDFPageAggregator(rsrcmgr, laparams=laparams)
-    interpreter = PDFPageInterpreter(rsrcmgr, device)
-    text = ''
-    for page in PDFPage.create_pages(doc):
-        interpreter.process_page(page)
-        layout = device.get_result()
-        for lt_obj in layout:
-            if isinstance(lt_obj, LTText):
-                text += lt_obj.get_text().strip() + "\n"
-                print(text)
-    return text
+    for page in PDFPage.get_pages(file, caching=True, check_extractable=True):
+        page_interpreter.process_page(page)
+    text = fake_file_handle.getvalue()
+
+    # close open handles
+    converter.close()
+    fake_file_handle.close()
+
+    if text:
+        #Omit a strange symbol and break the string to a new line
+        return text.replace(text[-1], '\n')
+
 
 if __name__ == '__main__':
     app.run()
