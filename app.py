@@ -19,6 +19,7 @@ import string
 #Grammar & Spelling Lib
 import pylanguagetool
 import nltk
+from spellchecker import SpellChecker
 
 # Flask initialization
 from flask import *
@@ -39,14 +40,25 @@ def index():
 def process():
     if request.method == 'POST':
         f = request.files['cvfile']
+        sc = SpellChecker()
+        shortened_words = []
+        testList = list()
         text = extract_text_from_pdf(f)
         word_count = len(text.split())
         text_array = text.strip().split('\n')
         for i in range (len(text_array)):
             text_array[i] = "<p>" + text_array[i] + "</p>"
-        
+
+        #Spellchecking
+        testList = text
+        misspelled = sc.unknown(testList.split())
+        for m in misspelled:
+            shortened_words.append(reduce_lengthening(m))
+        for s in range(len(shortened_words)):
+            shortened_words[s] = sc.correction(shortened_words[s])
+
         text = Markup(''.join(text_array))
-        return render_template("result.html", text=text, word_count = word_count)
+        return render_template("result.html", text=text, word_count = word_count, misspelled=misspelled, test=shortened_words)
 
 def extract_text_from_pdf(file):
     resource_manager = PDFResourceManager()
@@ -67,6 +79,9 @@ def extract_text_from_pdf(file):
         #Omit a strange symbol and break the string to a new line
         return text.replace(text[-1], '\n')
 
+def reduce_lengthening(text):
+    pattern = re.compile(r"(.)\1{2,}")
+    return pattern.sub(r"\1\1",text)
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
