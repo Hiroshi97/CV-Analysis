@@ -5,3 +5,4 @@ pdfminer
 pypdf2
 pylanguagetool
 nltk
+pyspellchecker
