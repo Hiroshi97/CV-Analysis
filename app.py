@@ -50,15 +50,15 @@ def process():
             text_array[i] = "<p>" + text_array[i] + "</p>"
 
         #Spellchecking
-        testList = text
-        misspelled = sc.unknown(testList.split())
+        clonedList = text
+        misspelled = sc.unknown(clonedList.split())
         for m in misspelled:
             shortened_words.append(reduce_lengthening(m))
         for s in range(len(shortened_words)):
             shortened_words[s] = sc.correction(shortened_words[s])
 
         text = Markup(''.join(text_array))
-        return render_template("result.html", text=text, word_count = word_count, misspelled=misspelled, test=shortened_words)
+        return render_template("result.html", text=text, word_count = word_count, misspelled=misspelled, corrected=shortened_words)
 
 def extract_text_from_pdf(file):
     resource_manager = PDFResourceManager()
