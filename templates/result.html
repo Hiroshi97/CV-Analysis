@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
 {% block header %}
 <h1>{% block title %}Result{% endblock %}</h1>
+
 {% endblock %} 
 {% block content %}
-{{text}}
-
+<p>{{text}}</p>
+<p>Word Count: {{word_count}}</p>
 {%endblock%}
