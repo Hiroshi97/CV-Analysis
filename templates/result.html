@@ -4,11 +4,6 @@
 
 {% endblock %} 
 {% block content %}
-    <p>{{text}}</p>
-    <p>Word Count: {{word_count}}</p>
-    <hr>
-    {% if misspelled is defined %}
-        <p>Mispelled words: {{misspelled}}</p>
-        <p>Correction: {{corrected}}</p>
-    {% endif %}
+<p>{{text}}</p>
+<p>Word Count: {{word_count}}</p>
 {%endblock%}

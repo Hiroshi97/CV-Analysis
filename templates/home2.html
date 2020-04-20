@@ -30,15 +30,15 @@
         template: '#upload_temp',
         data(){
             return {
-                file:null
+                file:''
             }
         },
        methods: {
             upload(){
                 var data = new FormData();
                   data.append('foo', 'bar');
-                  data.append('file', document.getElementById('file').files[0]);
-                  axios.post('/api/process',data).then(function (response) {
+                  data.append('cvfile', document.getElementById('file').files[0]);
+                  axios.post('/api/result',data).then(function (response) {
                       console.log(response)
                   });
             }
