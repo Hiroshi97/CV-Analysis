@@ -1,8 +1,0 @@
-flask
-flask_cors
-flask_sqlalchemy
-pdfminer
-pypdf2
-pylanguagetool
-nltk
-pyspellchecker
