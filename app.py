@@ -13,11 +13,9 @@ from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.converter import PDFPageAggregator
 from pdfminer.layout import LAParams, LTTextBox, LTTextLine
 from pdfminer.pdfdevice import PDFDevice
-import PyPDF2
 import string
 
 #Grammar & Spelling Lib
-import pylanguagetool
 import nltk
 
 # Flask initialization
@@ -39,6 +37,8 @@ def index():
 def process():
     if request.method == 'POST':
         f = request.files['cvfile']
+        filename = f.filename
+        filesize = str(int(len(f.read())/1024)) + "kb"
         text = extract_text_from_pdf(f)
         word_count = len(text.split())
         text_array = text.strip().split('\n')
@@ -46,7 +46,8 @@ def process():
             text_array[i] = "<p>" + text_array[i] + "</p>"
         
         text = Markup(''.join(text_array))
-        return render_template("result.html", text=text, word_count = word_count)
+        
+        return render_template("result.html", filename=filename, filesize=filesize, word_count=word_count)
 
 def extract_text_from_pdf(file):
     resource_manager = PDFResourceManager()
