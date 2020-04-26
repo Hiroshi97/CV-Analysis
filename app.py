@@ -38,6 +38,8 @@ def index():
 def process():
     if request.method == 'POST':
         f = request.files['cvfile']
+        sc = SpellChecker()
+        shortened_words = []
         filename = f.filename
         filesize = str(int(len(f.read())/1024)) + "kb"
         text = extract_text_from_pdf(f)
@@ -53,10 +55,14 @@ def process():
             shortened_words.append(reduce_lengthening(m))
         for s in range(len(shortened_words)):
             shortened_words[s] = sc.correction(shortened_words[s])
+        
+        #Count word frequency
+        word_list = word_frequency(clonedList)
 
         text = Markup(''.join(text_array))
         
-        return render_template("result.html", filename=filename, filesize=filesize, word_count=word_count)
+        return render_template("result.html", filename=filename, filesize=filesize, word_count=word_count, misspelled=misspelled, corrected=shortened_words,
+        word_list = word_list)
 
 def extract_text_from_pdf(file):
     resource_manager = PDFResourceManager()
@@ -80,6 +86,18 @@ def extract_text_from_pdf(file):
 def reduce_lengthening(text):
     pattern = re.compile(r"(.)\1{2,}")
     return pattern.sub(r"\1\1",text)
+
+def word_frequency(str):
+    counts = dict()
+    words = str.split()
+
+    for word in words:
+        if word in counts:
+            counts[word] += 1
+        else:
+            counts[word] = 1
+
+    return counts
 
 if __name__ == '__main__':
     app.run(debug=True)
