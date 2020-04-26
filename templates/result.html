@@ -1,14 +1,20 @@
 {% extends 'base.html' %}
-{% block header %}
-<h1>{% block title %}Result{% endblock %}</h1>
-
-{% endblock %} 
+{% block header%}<h2>CV TEXT ANALYZER</h2><hr>{% endblock %}
 {% block content %}
-    <p>{{text}}</p>
-    <p>Word Count: {{word_count}}</p>
-    <hr>
-    {% if misspelled is defined %}
-        <p>Mispelled words: {{misspelled}}</p>
-        <p>Correction: {{corrected}}</p>
-    {% endif %}
+<div class="result">
+    <h1>{% block title %}Result{% endblock %}</h1>
+    <div class="information">
+      <img border="0" alt="fileIcon" src="https://img.icons8.com/cotton/2x/file.png" width="50" height="50">
+      <p>File Name: {{filename}}</p>
+      <p>File Size: {{filesize}}</p>
+      <p>Word Count: {{word_count}}</p>
+    </div>
+</div>
 {%endblock%}
+{% block footer %}
+<p>&copy; 2019 by <a href="http://domain.invalid/">SEPA Team 12.</a></p>
+<a href="https://www.facebook.com" class="fa fa-facebook px-3"></a>
+<a href="https://www.linkedin.com" class="fa fa-linkedin px-3"></a>
+<a href="https://www.twitter.com" class="fa fa-twitter px-3"></a>
+<a href="https://www.instagram.com" class="fa fa-instagram px-3"></a>
+{% endblock %}
