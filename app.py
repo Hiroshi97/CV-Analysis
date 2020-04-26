@@ -60,7 +60,8 @@ def process():
         word_list = word_frequency(clonedList)
 
         text = Markup(''.join(text_array))
-        
+
+        #@Jun: Delete word_list from line 66 after you are done with the warning thing
         return render_template("result.html", filename=filename, filesize=filesize, word_count=word_count, misspelled=misspelled, corrected=shortened_words,
         word_list = word_list)
 
