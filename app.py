@@ -57,7 +57,7 @@ def process():
             shortened_words[s] = sc.correction(shortened_words[s])
         
         #Count word frequency
-        word_list = word_frequency(clonedList)
+        word_list = word_filter(word_frequency(clonedList))
 
         text = Markup(''.join(text_array))
 
@@ -101,6 +101,14 @@ def word_frequency(str):
             counts[word] = 1
 
     return counts
+
+def word_filter(dictObject):
+    new_counts = dict()
+    for(key, value) in dictObject.items():
+        if value >= 5: new_counts[key] = value
+ 
+    return new_counts
+
 
 if __name__ == '__main__':
     app.run(debug=True)

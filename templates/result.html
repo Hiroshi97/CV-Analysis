@@ -11,7 +11,20 @@
       <p>Mispelled words: {{misspelled}}</p>
       <p>Correction: {{corrected}}</p>
       <!-- Delete the line below this and replace it the warning line if word frequency exceeds threshold -->
-      <p>Word list: {{word_list}}</p>
+      <p>Warning! These are the words that repeated more than 5 times: </p> 
+        <table>
+          <tr>
+            <th>Word</th>
+            <th>No.</th>
+          </tr>
+          {%for key, value in word_list.items() %}
+          <tr>
+            <td>{{key}}</td>
+            <td>{{value}}</td>
+          </tr>
+          {%endfor%}
+        </table>
+        
     </div>
 </div>
 {%endblock%}
