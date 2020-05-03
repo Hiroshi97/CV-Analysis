@@ -39,6 +39,7 @@ def process():
     if request.method == 'POST':
         f = request.files['cvfile']
         sc = SpellChecker()
+        sc.word_frequency.load_dictionary('static/test_dict.json')
         shortened_words = []
         filename = f.filename
         filesize = str(int(len(f.read())/1024)) + "kb"
@@ -49,10 +50,18 @@ def process():
             text_array[i] = "<p>" + text_array[i] + "</p>"
 
         #Spellchecking
+        regex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
         clonedList = text
         misspelled = sc.unknown(clonedList.split())
+
         for m in misspelled:
-            shortened_words.append(reduce_lengthening(m))
+            if(re.search(regex,m)):
+                continue
+            cleanString = re.sub('\W+','', m)
+            shortened_words.append(reduce_lengthening(cleanString))
+
+        cleanList = shortened_words.copy()
+
         for s in range(len(shortened_words)):
             shortened_words[s] = sc.correction(shortened_words[s])
         
@@ -61,10 +70,8 @@ def process():
 
         text = Markup(''.join(text_array))
 
-        # test commit
-
         #@Jun: Delete word_list from line 66 after you are done with the warning thing
-        return render_template("result.html", filename=filename, filesize=filesize, word_count=word_count, misspelled=misspelled, corrected=shortened_words,
+        return render_template("result.html", filename=filename, filesize=filesize, word_count=word_count, misspelled=cleanList, corrected=shortened_words,
         word_list = word_list)
 
 def extract_text_from_pdf(file):
