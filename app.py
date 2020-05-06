@@ -27,6 +27,9 @@ from flask_sqlalchemy import SQLAlchemy
 # fuzzywuzzy lib
 from fuzzywuzzy import fuzz
 
+# base64 encode
+import base64
+
 app = Flask(__name__)
 
 #CORS
@@ -41,16 +44,25 @@ def index():
 def process():
     if request.method == 'POST':
         f = request.files['cvfile']
+
         sc = SpellChecker()
         sc.word_frequency.load_dictionary('static/test_dict.json')
         shortenedWords = []
+
+        
+        pdfstring = base64.b64encode(f.read())
+        pdfstring = pdfstring.decode('ascii')
+
+
         filename = f.filename
         filesize = str(int(len(f.read())/1024)) + "kb"
         text = extract_text_from_pdf(f)
         word_count = len(text.split())
+        word_result = word_metric(word_count)
         text_array = text.strip().split('\n')
         for i in range (len(text_array)):
             text_array[i] = "<p>" + text_array[i] + "</p>"
+
 
         #Spellchecking
         emailRegex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
@@ -73,8 +85,20 @@ def process():
         word_matching(word_frequency(clonedList))
         text = Markup(''.join(text_array))
 
+        text = Markup(''.join(text_array))
+        
         return render_template("result.html", filename=filename, filesize=filesize, word_count=word_count, misspelled=cleanList, corrected=shortenedWords,
-        word_list = word_list)
+        word_list = word_list, pdfstring=pdfstring, word_result=word_result)
+
+def word_metric(word_count):
+    if word_count <= 449:
+        metric_result = "Add more words!"
+    if word_count >= 650:
+        metric_result = "Reduce amount of words!"
+    if word_count >= 450 & word_count <= 649:
+        metric_result = "Appropriate word count"
+    
+    return metric_result
 
 def extract_text_from_pdf(file):
     resource_manager = PDFResourceManager()
@@ -185,7 +209,6 @@ def word_matching(dictObject):
                 # else:
                 #     print(fuzz.token_sort_ratio(key.lower(),x.lower()))
                             
-
-
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
+
