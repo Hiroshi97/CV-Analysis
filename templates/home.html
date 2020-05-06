@@ -120,13 +120,22 @@
       evt.preventDefault();
     };
     $("#drop").ondrop = (evt) => {
-      $("input[type=file]").files = evt.dataTransfer.files;
-      $("footer").classList.add("hasFiles");
-      $("#drop").classList.remove("active");
-      $("#drop").classList.add("hidden");
-      // Input change for dropping file
-      handleDragDropFile($("input[type=file]").files)
-      evt.preventDefault();
+      // Prevent files other than .pdf to be dragged and dropped
+      if (!evt.dataTransfer.files[0].name.includes(".pdf"))
+      {
+        $("#drop").classList.remove("active");
+        evt.preventDefault();
+      }
+      else {  
+        $("input[type=file]").files = evt.dataTransfer.files;
+        $("footer").classList.add("hasFiles");
+        $("#drop").classList.remove("active");
+        $("#drop").classList.add("hidden");
+        
+        // Input change for dropping file
+        handleDragDropFile($("input[type=file]").files)
+        evt.preventDefault();
+      }
     };
 
     $("input[type=file]").addEventListener("change", handleBrowseFile);

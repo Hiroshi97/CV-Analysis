@@ -48,13 +48,23 @@ def process():
         filesize = str(int(len(f.read())/1024)) + "kb"
         text = extract_text_from_pdf(f)
         word_count = len(text.split())
+        word_result = word_metric(word_count)
         text_array = text.strip().split('\n')
         for i in range (len(text_array)):
             text_array[i] = "<p>" + text_array[i] + "</p>"
-        
         text = Markup(''.join(text_array))
         
-        return render_template("result.html", filename=filename, filesize=filesize, word_count=word_count, pdfstring=pdfstring)
+        return render_template("result.html", filename=filename, filesize=filesize, word_count=word_count, pdfstring=pdfstring, word_result=word_result)
+
+def word_metric(word_count):
+    if word_count <= 449:
+        metric_result = "Add more words!"
+    if word_count >= 650:
+        metric_result = "Reduce amount of words!"
+    if word_count >= 450 & word_count <= 649:
+        metric_result = "Appropriate word count"
+    
+    return metric_result
 
 def extract_text_from_pdf(file):
     resource_manager = PDFResourceManager()
