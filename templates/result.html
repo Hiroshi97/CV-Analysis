@@ -8,9 +8,28 @@
       <p>File Name: {{filename}}</p>
       <p>File Size: {{filesize}}</p>
       <p>Word Count: {{word_count}}</p>
+
+      <p>Mispelled words: {{misspelled}}</p>
+      <p>Correction: {{corrected}}</p>
+      <p>Warning! These are the words that repeated more than 5 times: </p> 
+        <table>
+          <tr>
+            <th>Word</th>
+            <th>No.</th>
+          </tr>
+          {%for key, value in word_list.items() %}
+          <tr>
+            <td>{{key}}</td>
+            <td>{{value}}</td>
+          </tr>
+          {%endfor%}
+        </table>
+        
+
       <iframe src="data:application/pdf;base64, {{pdfstring}}" width="800" height="800"></iframe>
       <p>Word length: {{word_result}}</p>
       <p>Resumes should generally be around 450 - 650 words long, your resume has {{word_count}} words.</p>
+
     </div>
 </div>
 {%endblock%}
