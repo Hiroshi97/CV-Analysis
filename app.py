@@ -13,16 +13,32 @@ from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.converter import PDFPageAggregator
 from pdfminer.layout import LAParams, LTTextBox, LTTextLine
 from pdfminer.pdfdevice import PDFDevice
+import PyPDF2
 import string
+import mapplotlib.pyplot as plt, mpld3
+
+import matplotlib.pyplot as plt, mpld3
+import io
+from matplotlib.figure import Figure
+import base64
 
 #Grammar & Spelling Lib
+import pylanguagetool
 import nltk
+
+#Regular Expression
+import re
+
 from spellchecker import SpellChecker
 
 # Flask initialization
 from flask import *
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
+from nltk.tokenize import PunktSentenceTokenizer
+nltk.download('averaged_perceptron_tagger')
+
+nltk.download('punkt')
 
 # fuzzywuzzy lib
 from fuzzywuzzy import fuzz
@@ -56,39 +72,81 @@ def process():
 
         filename = f.filename
         filesize = str(int(len(f.read())/1024)) + "kb"
+
         text = extract_text_from_pdf(f)
         word_count = len(text.split())
-        word_result = word_metric(word_count)
         text_array = text.strip().split('\n')
         for i in range (len(text_array)):
             text_array[i] = "<p>" + text_array[i] + "</p>"
-
-
-        #Spellchecking
-        emailRegex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
-        clonedList = text
-        misspelled = sc.unknown(clonedList.split())
-
-        for m in misspelled:
-            if(re.search(emailRegex,m)):
-                continue
-            cleanString = re.sub('\W+','', m)
-            shortenedWords.append(reduce_lengthening(cleanString))
-
-        cleanList = shortenedWords.copy()
-
-        for s in range(len(shortenedWords)):
-            shortenedWords[s] = sc.correction(shortenedWords[s])
         
-        #Count word frequency
-        word_list = word_filter(word_frequency(clonedList))
-        word_matching(word_frequency(clonedList))
         text = Markup(''.join(text_array))
+    
+        if  450 <= word_count <= 650:
+            word_count_warning = "Top resumes are generally between 450 and 650 words long. Congrats! your resume has " + str(word_count) + " words."
+        else:
+            word_count_warning = "Top resumes are generally between 450 and 650 words long. Unfortunately, your resume has " + str(word_count) + " words."
 
-        text = Markup(''.join(text_array))
-        
-        return render_template("result.html", filename=filename, filesize=filesize, word_count=word_count, misspelled=cleanList, corrected=shortenedWords,
-        word_list = word_list, pdfstring=pdfstring, word_result=word_result)
+
+    #firstPersonSentiment
+    textClone = nltk.word_tokenize(text)
+    textCloneTag= nltk.pos_tag(textClone)
+    
+    tagged_sent =textCloneTag
+    tagged_sent_str = ' '.join([word + '/' + pos for word, pos in tagged_sent])
+
+    countFirstPerson = sum(1 for _ in re.finditer(r'\b%s\b' % re.escape("PRP"), tagged_sent_str))
+
+    countNoun = sum(1 for _ in re.finditer(r'\b%s\b' % re.escape("NN"), tagged_sent_str))
+    countActionVerb = sum(1 for _ in re.finditer(r'\b%s\b' % re.escape("VB"), tagged_sent_str))
+ 
+    processed="Your CV has " + str(countFirstPerson) + " instances of first-person usage."
+
+    nounverb = "There were " + str(countNoun) + " nouns in your CV. It contains "+ str(countActionVerb) + " action verbs."
+
+    #piechart
+    plt.figure(figsize=(5,5))
+
+    fig = Figure(figsize =(4,4))
+
+    labels = ["Nouns","Action Verbs"]
+    values = [countNoun, countActionVerb]
+    
+    plt.pie(values,labels=labels, autopct="%.1f%%")
+    #plt.show()
+    #mpld3.show()
+    fig = plt.figure()
+    figureImage = mpld3.fig_to_html(fig)
+    img = io.BytesIO()
+    fig.savefig(img, format='png', bbox_inches='tight')
+    img.seek(0)
+    base = base64.b64encode(img.getvalue())
+    plt.close(fig)
+   
+    basesend ='<img src="data:image/png;base64, {}">'.format(base.decode('utf-8'))
+
+    #Spellchecking
+    emailRegex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
+    clonedList = text
+    misspelled = sc.unknown(clonedList.split())
+
+    for m in misspelled:
+        if(re.search(emailRegex,m)):
+            continue
+        cleanString = re.sub('\W+','', m)
+        shortenedWords.append(reduce_lengthening(cleanString))
+
+    cleanList = shortenedWords.copy()
+
+    for s in range(len(shortenedWords)):
+        shortenedWords[s] = sc.correction(shortenedWords[s])
+
+    #Count word frequency
+    word_list = word_filter(word_frequency(clonedList))
+    word_matching(word_frequency(clonedList))
+    text = Markup(''.join(text_array))
+
+    return render_template("result.html", filename=filename, filesize=filesize, word_count=word_count, misspelled=cleanList, corrected=shortenedWords,
+    word_list = word_list, pdfstring=pdfstring, word_result=word_result, processed = processed, nounverb = nounverb,my_html =base)
 
 def word_metric(word_count):
     if word_count <= 449:
@@ -96,9 +154,7 @@ def word_metric(word_count):
     if word_count >= 650:
         metric_result = "Reduce amount of words!"
     if word_count >= 450 & word_count <= 649:
-        metric_result = "Appropriate word count"
-    
-    return metric_result
+        metric_result = "Appropriate word count"   
 
 def extract_text_from_pdf(file):
     resource_manager = PDFResourceManager()
@@ -141,6 +197,7 @@ def word_filter(dictObject):
         if value >= 5: new_counts[key] = value
  
     return new_counts
+
 
 # word_matching is used for essential part
 # it will find the word that match the lists and return related result
