@@ -1,15 +1,70 @@
 {% extends 'base.html' %}
+
 {% block header%}<h2>CV TEXT ANALYZER</h2><hr>{% endblock %}
 {% block content %}
+<!<nav class="navbar_navbar-expand-md_navbar-custom">
+	<!<a class="navbar-brand" input type="button" onclick="history.back(-1)" /></a>
+<!</nav>
+
+	
+
 <div class="result">
     <h1>{% block title %}Result{% endblock %}</h1>
-    <div class="information">
-      <img border="0" alt="fileIcon" src="https://img.icons8.com/cotton/2x/file.png" width="50" height="50">
-      <p>File Name: {{filename}}</p>
-      <p>File Size: {{filesize}}</p>
-      <p>Word Count: {{word_count}}</p>
-    </div>
+	<div class="dropdown d-inline-block">
+		<div class="btn-group">
+			<button type="button" class ="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Impact</button>
+				<div class="dropdown-menu">
+					<a href="#" class ="dropdown-item"> File Name:{{filename}} </a>
+					<a href="#" class ="dropdown-item"> File Size: {{filesize}} </a>
+					<a href="#" class ="dropdown-item"> Word Count: {{word_count}} </a>
+					<a href="#" class ="dropdown-item"> {{processed}} </a>
+					<a href="#" class ="dropdown-item"> {{nounverb}} </a>
+					</div>
+					</div>
+					</div>
+	<div class="dropdown d-inline-block">
+		<div class="btn-group">
+			<button type="button" class ="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Brevity</button>
+				<div class="dropdown-menu">
+					<a href="#" class ="dropdown-item"> a </a>
+					<a href="#" class ="dropdown-item"> b </a>
+					<a href="#" class ="dropdown-item"> c </a>
+					<a href="#" class ="dropdown-item"> d </a>
+					<a href="#" class ="dropdown-item"> e </a>
+					</div>
+					</div>
+					</div>
+	<div class="dropdown d-inline-block">
+		<div class="btn-group">
+			<button type="button" class ="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Style</button>
+				<div class="dropdown-menu">
+					<a href="#" class ="dropdown-item"> a </a>
+					<a href="#" class ="dropdown-item"> b </a>
+					<a href="#" class ="dropdown-item"> c </a>
+					<a href="#" class ="dropdown-item"> d </a>
+					<a href="#" class ="dropdown-item"> e </a>
+					</div>
+					</div>
+					</div>
+	<div class="dropdown d-inline-block">
+		<div class="btn-group">
+			<button type="button" class ="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Soft Skills</button>
+				<div class="dropdown-menu">
+					<a href="#" class ="dropdown-item"> a </a>
+					<a href="#" class ="dropdown-item"> b </a>
+					<a href="#" class ="dropdown-item"> c </a>
+					<a href="#" class ="dropdown-item"> d </a>
+					<a href="#" class ="dropdown-item"> e </a>
+					</div>
+					</div>
+					</div>
+    
+	  <!<img src="data:image/png;base64.format({{my_html}}.decode('utf-8'))>
+    
 </div>
+
+			
+			
 {%endblock%}
 {% block footer %}
 <p>&copy; 2019 by <a href="http://domain.invalid/">SEPA Team 12.</a></p>
