@@ -16,6 +16,10 @@ body {
   background-size: cover;
 }
 
+.preview {
+  text-align: center;
+}
+
 .upload {
   position: relative;
   width: 400px;
@@ -463,11 +467,6 @@ body {
 .result p{
   font-size: medium;
 }
-
-	
-	
-
-
 
 hr {
   border: 4px solid black;
