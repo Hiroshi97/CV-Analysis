@@ -116,6 +116,74 @@ def word_filter(dictObject):
  
     return new_counts
 
+# word_matching is used for essential part
+# it will find the word that match the lists and return related result
+def word_matching(dictObject):
+    # dictObject variable must come from word_frequency result
+    list1 = ["career", "objective", "summary", "profile"]
+    list2 = ["elementary","education", "qualification", "training", "academic", "GPA", "Bachelor", "degree", "master", "PhD", "high school", "diploma", "accociate degree", "TAFE", "certificates", "archiement"]
+    list3 = ["part-time","employment", "Experience", "work", "placement", "internship", "profesional", "volunteer", "practicums", "job"]
+    list4 = ["skill", "attribute", "strength", "key skills", "know", "knew", "programming", "java", "language", "c#", "flask", "python", "AWS", "d3"]
+    list5 = ["referee", "reference"]
+    li1 = True
+    li2 = True
+    li3 = True
+    li4 = True
+    li5 = True
+
+    for(key, value) in dictObject.items():
+        #print(key)
+        if li1:
+            for x in list1:
+                if fuzz.token_sort_ratio(key.lower(),x.lower()) > 80:
+                    li1 = False
+                    print("career objective achieved!!!")
+                    print(fuzz.token_sort_ratio(key.lower(),x.lower()))
+                    print(key)
+                # else:
+                #     print(fuzz.token_sort_ratio(key.lower(),x.lower()))
+
+        if li2:
+            for x in list2:
+                if fuzz.token_sort_ratio(key.lower(),x.lower()) > 80:
+                    li2 = False
+                    print("education achieved!!!")
+                    print(fuzz.token_sort_ratio(key.lower(),x.lower()))
+                    print(key)
+                # else:
+                #     print(fuzz.token_sort_ratio(key.lower(),x.lower()))
+
+        if li3:
+            for x in list3:
+                if fuzz.token_sort_ratio(key.lower(),x.lower()) > 80:
+                    li3 = False
+                    print("employment achieved!!!")
+                    print(fuzz.token_sort_ratio(key.lower(),x.lower()))
+                    print(key)
+                # else:
+                #     print(fuzz.token_sort_ratio(key.lower(),x.lower()))
+
+        if li4:
+            for x in list4:
+                if fuzz.token_sort_ratio(key.lower(),x.lower()) > 80:
+                    li4 = False
+                    print("skill achieved!!!")
+                    print(fuzz.token_sort_ratio(key.lower(),x.lower()))
+                    print(key)
+                # else:
+                #     print(fuzz.token_sort_ratio(key.lower(),x.lower()))
+
+        if li5:
+            for x in list5:
+                if fuzz.token_sort_ratio(key.lower(),x.lower()) > 80:
+                    li5 = False
+                    print("reference achieved!!!")
+                    print(fuzz.token_sort_ratio(key.lower(),x.lower()))
+                    print(key)
+                # else:
+                #     print(fuzz.token_sort_ratio(key.lower(),x.lower()))
+                            
+
 
 if __name__ == '__main__':
     app.run(debug=True)
