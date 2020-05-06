@@ -26,10 +26,10 @@
 		<div class="btn-group">
 			<button type="button" class ="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Brevity</button>
 				<div class="dropdown-menu">
-					<a href="#" class ="dropdown-item"> a </a>
-					<a href="#" class ="dropdown-item"> b </a>
-					<a href="#" class ="dropdown-item"> c </a>
-					<a href="#" class ="dropdown-item"> d </a>
+					<a href="#" class ="dropdown-item"> Misspelled words: {{misspelled}} </a>
+					<a href="#" class ="dropdown-item"> Correction: {{corrected}} </a>
+					<a href="#" class ="dropdown-item"> Word length: {{word_result}} </a>
+					<a href="#" class ="dropdown-item"> Resumes should generally be around 450 - 650 words long, your resume has {{word_count}} words. </a>
 					<a href="#" class ="dropdown-item"> e </a>
 					</div>
 					</div>
@@ -60,7 +60,8 @@
 					</div>
     
 	  <!<img src="data:image/png;base64.format({{my_html}}.decode('utf-8'))>
-    
+      
+   <iframe src="data:application/pdf;base64, {{pdfstring}}" width="800" height="800"></iframe>
 </div>
 
 			
