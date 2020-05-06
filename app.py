@@ -15,6 +15,7 @@ from pdfminer.layout import LAParams, LTTextBox, LTTextLine
 from pdfminer.pdfdevice import PDFDevice
 import PyPDF2
 import string
+import mapplotlib.pyplot as plt, mpld3
 
 import matplotlib.pyplot as plt, mpld3
 import io
@@ -32,7 +33,11 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from nltk.tokenize import PunktSentenceTokenizer
 nltk.download('averaged_perceptron_tagger')
+<<<<<<< Updated upstream
 nltk.download('punkt')
+=======
+nltk.downlload('punkt')
+>>>>>>> Stashed changes
 
 app = Flask(__name__)
 
@@ -56,10 +61,13 @@ def process():
         
         text = Markup(''.join(text_array))
         
+<<<<<<< Updated upstream
         if  450 <= word_count <= 650:
             word_count_warning = "Top resumes are generally between 450 and 650 words long. Congrats! your resume has " + str(word_count) + " words."
         else:
             word_count_warning = "Top resumes are generally between 450 and 650 words long. Unfortunately, your resume has " + str(word_count) + " words."
+=======
+>>>>>>> Stashed changes
 
 
 
@@ -75,22 +83,30 @@ def process():
     countNoun = sum(1 for _ in re.finditer(r'\b%s\b' % re.escape("NN"), tagged_sent_str))
     countActionVerb = sum(1 for _ in re.finditer(r'\b%s\b' % re.escape("VB"), tagged_sent_str))
 
+<<<<<<< Updated upstream
     
         
     processed="Your CV has " + str(countFirstPerson) + " instances of first-person usage."
 
     nounverb = "There were " + str(countNoun) + " nouns in your CV. It contains "+ str(countActionVerb) + " action verbs."
+=======
+    processed="Your CV has " + str(countFirstPerson) + " instances of first-person usage. Please fix!"
+>>>>>>> Stashed changes
 
 
 
     #piechart
     plt.figure(figsize=(5,5))
+<<<<<<< Updated upstream
     fig = Figure(figsize =(4,4))
+=======
+>>>>>>> Stashed changes
 
     labels = ["Nouns","Action Verbs"]
     values = [countNoun, countActionVerb]
     
 
+<<<<<<< Updated upstream
     plt.pie(values,labels=labels, autopct="%.1f%%")
     #plt.show()
     #mpld3.show()
@@ -109,6 +125,15 @@ def process():
     
     
     return render_template("result.html", text=text, word_count = word_count, processed = processed, nounverb = nounverb,my_html =base)
+=======
+    plt.pie(values,labels=labels, autopct="%.1f%%",figure = fig)
+    plt.show()
+    mpld3.show()
+    fig = plt.figure()
+    figureImage = mpld3.fig_to_html(fig)
+    
+    return render_template("result.html", text=text, word_count = word_count, processed = processed, piechart = figureImage)
+>>>>>>> Stashed changes
 
 
     
