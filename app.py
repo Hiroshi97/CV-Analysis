@@ -23,6 +23,9 @@ from flask import *
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 
+# base64 encode
+import base64
+
 app = Flask(__name__)
 
 #CORS
@@ -37,6 +40,10 @@ def index():
 def process():
     if request.method == 'POST':
         f = request.files['cvfile']
+        
+        pdfstring = base64.b64encode(f.read())
+        pdfstring = pdfstring.decode('ascii')
+
         filename = f.filename
         filesize = str(int(len(f.read())/1024)) + "kb"
         text = extract_text_from_pdf(f)
@@ -47,7 +54,7 @@ def process():
             text_array[i] = "<p>" + text_array[i] + "</p>"
         text = Markup(''.join(text_array))
         
-        return render_template("result.html", filename=filename, filesize=filesize, word_count=word_count, word_result=word_result)
+        return render_template("result.html", filename=filename, filesize=filesize, word_count=word_count, pdfstring=pdfstring, word_result=word_result)
 
 def word_metric(word_count):
     if word_count <= 449:

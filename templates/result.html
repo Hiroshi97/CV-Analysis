@@ -8,19 +8,9 @@
       <p>File Name: {{filename}}</p>
       <p>File Size: {{filesize}}</p>
       <p>Word Count: {{word_count}}</p>
+      <iframe src="data:application/pdf;base64, {{pdfstring}}" width="800" height="800"></iframe>
       <p>Word length: {{word_result}}</p>
       <p>Resumes should generally be around 450 - 650 words long, your resume has {{word_count}} words.</p>
-    </div>
-      <!-- <script>
-        var current_progress = '{{word_count}}';
-        function updateBar(){
-        $(".progress-bar")
-          .css("width", 1100 + "%")
-          .attr("aria-valuenow", current_progress)
-          .text(current_progress + " words");
-        }
-        updateBar();
-      </script> -->
     </div>
 </div>
 {%endblock%}
