@@ -24,6 +24,9 @@ from flask import *
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 
+# fuzzywuzzy lib
+from fuzzywuzzy import fuzz
+
 app = Flask(__name__)
 
 #CORS
@@ -67,7 +70,7 @@ def process():
         
         #Count word frequency
         word_list = word_filter(word_frequency(clonedList))
-
+        word_matching(word_frequency(clonedList))
         text = Markup(''.join(text_array))
 
         #@Jun: Delete word_list from line 66 after you are done with the warning thing
