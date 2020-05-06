@@ -43,7 +43,7 @@ def process():
         f = request.files['cvfile']
         sc = SpellChecker()
         sc.word_frequency.load_dictionary('static/test_dict.json')
-        shortened_words = []
+        shortenedWords = []
         filename = f.filename
         filesize = str(int(len(f.read())/1024)) + "kb"
         text = extract_text_from_pdf(f)
@@ -53,28 +53,27 @@ def process():
             text_array[i] = "<p>" + text_array[i] + "</p>"
 
         #Spellchecking
-        regex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
+        emailRegex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
         clonedList = text
         misspelled = sc.unknown(clonedList.split())
 
         for m in misspelled:
-            if(re.search(regex,m)):
+            if(re.search(emailRegex,m)):
                 continue
             cleanString = re.sub('\W+','', m)
-            shortened_words.append(reduce_lengthening(cleanString))
+            shortenedWords.append(reduce_lengthening(cleanString))
 
-        cleanList = shortened_words.copy()
+        cleanList = shortenedWords.copy()
 
-        for s in range(len(shortened_words)):
-            shortened_words[s] = sc.correction(shortened_words[s])
+        for s in range(len(shortenedWords)):
+            shortenedWords[s] = sc.correction(shortenedWords[s])
         
         #Count word frequency
         word_list = word_filter(word_frequency(clonedList))
         word_matching(word_frequency(clonedList))
         text = Markup(''.join(text_array))
 
-        #@Jun: Delete word_list from line 66 after you are done with the warning thing
-        return render_template("result.html", filename=filename, filesize=filesize, word_count=word_count, misspelled=cleanList, corrected=shortened_words,
+        return render_template("result.html", filename=filename, filesize=filesize, word_count=word_count, misspelled=cleanList, corrected=shortenedWords,
         word_list = word_list)
 
 def extract_text_from_pdf(file):
