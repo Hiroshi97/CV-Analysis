@@ -1,0 +1,31 @@
+{
+  "name": "CV Analyser",
+  "short_name": "CV Analyser",
+  "theme_color": "#CBD394",
+  "background_color": "#F1F7C6",
+  "icons": [
+    {
+        "src": "/static/logo/logo-64.png",
+        "type": "image/png",
+        "sizes": "64x64"
+      },
+      {
+        "src": "/static/logo/logo-96.png",
+        "type": "image/png",
+        "sizes": "96x96"
+      },
+      {
+        "src": "/static/logo/logo-128.png",
+        "type": "image/png",
+        "sizes": "128x128"
+      },
+      {
+        "src": "/static/logo/logo-192.png",
+        "type": "image/png",
+        "sizes": "192x192"
+      }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait"
+}

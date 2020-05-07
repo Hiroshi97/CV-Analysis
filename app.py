@@ -33,6 +33,7 @@ from spellchecker import SpellChecker
 from flask import *
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
+from flask_sslify import SSLify
 from nltk.tokenize import PunktSentenceTokenizer
 nltk.download('averaged_perceptron_tagger')
 
@@ -45,6 +46,7 @@ from fuzzywuzzy import fuzz
 import base64
 
 app = Flask(__name__)
+sslify = SSLify(app)
 
 #CORS
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
@@ -244,7 +246,11 @@ def word_matching(dictObject):
                     print(key)
                 # else:
                 #     print(fuzz.token_sort_ratio(key.lower(),x.lower()))
-                            
+
+@app.route('/sw.js')
+def sw():
+    return app.send_static_file('sw.js')
+
 if __name__ == '__main__':
     app.run()
 
