@@ -121,11 +121,11 @@ def process():
 
         #Count word frequency
         word_list = word_filter(word_frequency(clonedList))
-        word_matching(word_frequency(clonedList))
+        essential_section = word_matching(word_frequency(clonedList))
         text = Markup(''.join(text_array))
 
         return render_template("result.html", filename=filename, filesize=filesize, word_count=word_count, misspelled=cleanList, corrected=shortenedWords,
-        word_list = word_list, pdfstring=pdfstring, word_result=word_result, processed = processed, nounverb = nounverb)
+        word_list = word_list, pdfstring=pdfstring, word_result=word_result, processed = processed, nounverb = nounverb, essential_section = essential_section)
 
 def word_metric(word_count):
     if word_count <= 449:
@@ -194,6 +194,8 @@ def word_matching(dictObject):
     li3 = True
     li4 = True
     li5 = True
+    score = 0
+    result = ["", "", "", "", "", ""]
 
     for(key, value) in dictObject.items():
         #print(key)
@@ -204,8 +206,12 @@ def word_matching(dictObject):
                     print("career objective achieved!!!")
                     print(fuzz.token_sort_ratio(key.lower(),x.lower()))
                     print(key)
-                # else:
-                #     print(fuzz.token_sort_ratio(key.lower(),x.lower()))
+                    score += 20
+                    print("score: ", score)
+                    result[1] = "Career objective: included"
+                    break
+                else:
+                    result[1] = "Career objective: not included"
 
         if li2:
             for x in list2:
@@ -214,8 +220,12 @@ def word_matching(dictObject):
                     print("education achieved!!!")
                     print(fuzz.token_sort_ratio(key.lower(),x.lower()))
                     print(key)
-                # else:
-                #     print(fuzz.token_sort_ratio(key.lower(),x.lower()))
+                    score += 20
+                    print("score: ", score)
+                    result[2] = "Education & Qualification: included"
+                    break
+                else:
+                    result[2] = "Education & Qualification: not included"
 
         if li3:
             for x in list3:
@@ -224,8 +234,12 @@ def word_matching(dictObject):
                     print("employment achieved!!!")
                     print(fuzz.token_sort_ratio(key.lower(),x.lower()))
                     print(key)
-                # else:
-                #     print(fuzz.token_sort_ratio(key.lower(),x.lower()))
+                    score += 20
+                    print("score: ", score)
+                    result[3] = "Employment History: included"
+                    break
+                else:
+                    result[3] = "Employment History: not included"
 
         if li4:
             for x in list4:
@@ -234,8 +248,12 @@ def word_matching(dictObject):
                     print("skill achieved!!!")
                     print(fuzz.token_sort_ratio(key.lower(),x.lower()))
                     print(key)
-                # else:
-                #     print(fuzz.token_sort_ratio(key.lower(),x.lower()))
+                    score += 20
+                    print("score: ", score)
+                    result[4] = "Skills summary: included"
+                    break
+                else:
+                    result[4] = "Skills summary: not included"
 
         if li5:
             for x in list5:
@@ -244,8 +262,15 @@ def word_matching(dictObject):
                     print("reference achieved!!!")
                     print(fuzz.token_sort_ratio(key.lower(),x.lower()))
                     print(key)
-                # else:
-                #     print(fuzz.token_sort_ratio(key.lower(),x.lower()))
+                    score += 20
+                    print("score: ", score)
+                    result[5] = "References: included"
+                    break
+                else:
+                    result[5] = "References: not included"
+
+        result[0] = "Total score: " + str(score)
+    return result
 
 @app.route('/sw.js')
 def sw():

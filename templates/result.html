@@ -38,11 +38,9 @@
 		<div class="btn-group">
 			<button type="button" class ="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Style</button>
 				<div class="dropdown-menu">
-					<a href="#" class ="dropdown-item"> a </a>
-					<a href="#" class ="dropdown-item"> b </a>
-					<a href="#" class ="dropdown-item"> c </a>
-					<a href="#" class ="dropdown-item"> d </a>
-					<a href="#" class ="dropdown-item"> e </a>
+					{% for dropDownItem in essential_section %}
+						<a href="#" class ="dropdown-item"> {{dropDownItem}} </a>
+					{% endfor %}
 					</div>
 					</div>
 					</div>
