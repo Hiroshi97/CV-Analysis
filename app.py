@@ -46,7 +46,7 @@ from fuzzywuzzy import fuzz
 import base64
 
 app = Flask(__name__)
-sslify = SSLify(app)
+#sslify = SSLify(app)
 
 #CORS
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
@@ -60,82 +60,97 @@ def index():
 def process():
     if request.method == 'POST':
         f = request.files['cvfile']
+        
+        text = extract_text_from_pdf(f)
 
-        sc = SpellChecker()
-        sc.word_frequency.load_dictionary('static/test_dict.json')
-        shortenedWords = []
-
+        #PDF Preview
         pdfstring = base64.b64encode(f.read())
         pdfstring = pdfstring.decode('ascii')
 
+        #Word count metrics
+        word_count_num = len(text.split())
+        word_count_result = word_metric(word_count_num)
 
-        filename = f.filename
-        filesize = str(int(len(f.read())/1024)) + "kb"
-
-        text = extract_text_from_pdf(f)
-        word_count = len(text.split())
-        word_result = word_metric(word_count)
-        text_array = text.strip().split('\n')
-        for i in range (len(text_array)):
-            text_array[i] = "<p>" + text_array[i] + "</p>"
-        
-        text = Markup(''.join(text_array))
-    
-        if  450 <= word_count <= 650:
-            word_count_warning = "Top resumes are generally between 450 and 650 words long. Congrats! your resume has " + str(word_count) + " words."
-        else:
-            word_count_warning = "Top resumes are generally between 450 and 650 words long. Unfortunately, your resume has " + str(word_count) + " words."
-
+        #Spellchecker
+        spellcheck = spellchecker(text)
 
         #firstPersonSentiment
-        textClone = nltk.word_tokenize(text)
-        textCloneTag= nltk.pos_tag(textClone)
-        
-        tagged_sent =textCloneTag
-        tagged_sent_str = ' '.join([word + '/' + pos for word, pos in tagged_sent])
-
-        countFirstPerson = sum(1 for _ in re.finditer(r'\b%s\b' % re.escape("PRP"), tagged_sent_str))
-
-        countNoun = sum(1 for _ in re.finditer(r'\b%s\b' % re.escape("NN"), tagged_sent_str))
-        countActionVerb = sum(1 for _ in re.finditer(r'\b%s\b' % re.escape("VB"), tagged_sent_str))
-    
-        processed="Your CV has " + str(countFirstPerson) + " instances of first-person usage."
-
-        nounverb = "There were " + str(countNoun) + " nouns in your CV. It contains "+ str(countActionVerb) + " action verbs."
-
-        #Spellchecking
-        emailRegex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
-        clonedList = text
-        misspelled = sc.unknown(clonedList.split())
-
-        for m in misspelled:
-            if(re.search(emailRegex,m)):
-                continue
-            cleanString = re.sub('\W+','', m)
-            shortenedWords.append(reduce_lengthening(cleanString))
-
-        cleanList = shortenedWords.copy()
-
-        for s in range(len(shortenedWords)):
-            shortenedWords[s] = sc.correction(shortenedWords[s])
+        fps = firstPersonSentiment(text)
 
         #Count word frequency
-        word_list = word_filter(word_frequency(clonedList))
-        essential_section = word_matching(word_frequency(clonedList))
-        text = Markup(''.join(text_array))
+        word_list = word_filter(word_frequency(text))
+        essential_section = word_matching(word_frequency(text))
 
-        return render_template("result.html", filename=filename, filesize=filesize, word_count=word_count, misspelled=cleanList, corrected=shortenedWords,
-        word_list = word_list, pdfstring=pdfstring, word_result=word_result, processed = processed, nounverb = nounverb, essential_section = essential_section)
+        #File info
+        filename = "File name: " + f.filename
+        filesize = "File size: " + str(int(len(f.read())/1024)) + "kb"
+        word_count = "Word Count: " + str(word_count_num)
+
+        #Four factors
+        impact = [filename, filesize, word_count, fps[0], fps[1]]
+        brevity = [spellcheck[0], spellcheck[1], word_count_result, word_count_num]
+        style = essential_section
+        soft_skills = ["a", "b", "c", "d", "e"]
+
+        return render_template("result.html", impact=impact, brevity=brevity, style=style, soft_skills=soft_skills, pdfstring=pdfstring)
+    return redirect(url_for('index'))
+
+
+#Spellchecker
+def spellchecker(text):
+    sc = SpellChecker()
+    sc.word_frequency.load_dictionary('static/test_dict.json')
+    shortenedWords = []
+
+    #Spellchecking
+    emailRegex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
+    clonedList = text
+    misspelled = sc.unknown(clonedList.split())
+
+    for m in misspelled:
+        if(re.search(emailRegex,m)):
+            continue
+        cleanString = re.sub('\W+','', m)
+        shortenedWords.append(reduce_lengthening(cleanString))
+
+    cleanList = shortenedWords.copy()
+
+    for s in range(len(shortenedWords)):
+        shortenedWords[s] = sc.correction(shortenedWords[s])
+
+    return [cleanList, shortenedWords]
+
+#firstPersonSentiment
+def firstPersonSentiment(text):
+    textClone = nltk.word_tokenize(text)
+    textCloneTag= nltk.pos_tag(textClone)
+    
+    tagged_sent =textCloneTag
+    tagged_sent_str = ' '.join([word + '/' + pos for word, pos in tagged_sent])
+
+    countFirstPerson = sum(1 for _ in re.finditer(r'\b%s\b' % re.escape("PRP"), tagged_sent_str))
+
+    countNoun = sum(1 for _ in re.finditer(r'\b%s\b' % re.escape("NN"), tagged_sent_str))
+    countActionVerb = sum(1 for _ in re.finditer(r'\b%s\b' % re.escape("VB"), tagged_sent_str))
+
+    processed="Your CV has " + str(countFirstPerson) + " instances of first-person usage."
+
+    nounverb = "There were " + str(countNoun) + " nouns in your CV. It contains "+ str(countActionVerb) + " action verbs."
+
+    return [processed, nounverb]
 
 def word_metric(word_count):
-    if word_count <= 449:
-        metric_result = "Add more words!"
-    if word_count >= 650:
-        metric_result = "Reduce amount of words!"
-    if word_count >= 450 & word_count <= 649:
+    if  450 <= word_count <= 650:
         metric_result = "Appropriate word count"
+        word_count_warning = "Top resumes are generally between 450 and 650 words long. Congrats! your resume has " + str(word_count) + " words."
+    else:
+        word_count_warning = "Top resumes are generally between 450 and 650 words long. Unfortunately, your resume has " + str(word_count) + " words."
+        if word_count <= 449:
+            metric_result = "Add more words!"
+        if word_count >= 650:
+            metric_result = "Reduce amount of words!"
 
-    return metric_result
+    return metric_result + word_count_warning
 
 def extract_text_from_pdf(file):
     resource_manager = PDFResourceManager()
