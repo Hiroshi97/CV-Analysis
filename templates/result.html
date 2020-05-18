@@ -6,19 +6,15 @@
 	<!<a class="navbar-brand" input type="button" onclick="history.back(-1)" /></a>
 <!</nav>
 
-	
-
 <div class="result">
     <h1>{% block title %}Result{% endblock %}</h1>
 	<div class="dropdown d-inline-block">
 		<div class="btn-group">
 			<button type="button" class ="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Impact</button>
 				<div class="dropdown-menu">
-					<a href="#" class ="dropdown-item"> File Name:{{filename}} </a>
-					<a href="#" class ="dropdown-item"> File Size: {{filesize}} </a>
-					<a href="#" class ="dropdown-item"> Word Count: {{word_count}} </a>
-					<a href="#" class ="dropdown-item"> {{processed}} </a>
-					<a href="#" class ="dropdown-item"> {{nounverb}} </a>
+					{% for i in impact %}
+						<a href="#" class ="dropdown-item"> {{i}} </a>
+					{% endfor %}
 					</div>
 					</div>
 					</div>
@@ -26,11 +22,11 @@
 		<div class="btn-group">
 			<button type="button" class ="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Brevity</button>
 				<div class="dropdown-menu">
-					<a href="#" class ="dropdown-item"> Misspelled words: {{misspelled}} </a>
-					<a href="#" class ="dropdown-item"> Correction: {{corrected}} </a>
-					<a href="#" class ="dropdown-item"> Word length: {{word_result}} </a>
-					<a href="#" class ="dropdown-item"> Resumes should generally be around 450 - 650 words long, your resume has {{word_count}} words. </a>
-					<a href="#" class ="dropdown-item"> e </a>
+					<a href="#" class ="dropdown-item"> Misspelled words: {{brevity[0]}} </a>
+					<a href="#" class ="dropdown-item"> Correction: {{brevity[1]}} </a>
+					<a href="#" class ="dropdown-item"> Word length: {{brevity[2]}} </a>
+					<a href="#" class ="dropdown-item"> Resumes should generally be around 450 - 650 words long, your resume has {{brevity[3]}} words. </a>
+					<a href="#" class ="dropdown-item"> ? </a>
 					</div>
 					</div>
 					</div>
@@ -38,8 +34,8 @@
 		<div class="btn-group">
 			<button type="button" class ="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Style</button>
 				<div class="dropdown-menu">
-					{% for dropDownItem in essential_section %}
-						<a href="#" class ="dropdown-item"> {{dropDownItem}} </a>
+					{% for s in style %}
+						<a href="#" class ="dropdown-item"> {{s}} </a>
 					{% endfor %}
 					</div>
 					</div>
@@ -48,11 +44,9 @@
 		<div class="btn-group">
 			<button type="button" class ="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Soft Skills</button>
 				<div class="dropdown-menu">
-					<a href="#" class ="dropdown-item"> a </a>
-					<a href="#" class ="dropdown-item"> b </a>
-					<a href="#" class ="dropdown-item"> c </a>
-					<a href="#" class ="dropdown-item"> d </a>
-					<a href="#" class ="dropdown-item"> e </a>
+					{% for ss in soft_skills %}
+						<a href="#" class ="dropdown-item"> {{ss}} </a>
+					{% endfor %}
 					</div>
 					</div>
 					</div>
@@ -70,7 +64,7 @@
 		
 {%endblock%}
 {% block footer %}
-<p>&copy; 2019 by <a href="http://domain.invalid/">SEPA Team 12.</a></p>
+<p>&copy; 2020 by <a href="http://domain.invalid/">SEPA Team 12.</a></p>
 <a href="https://www.facebook.com" class="fa fa-facebook px-3"></a>
 <a href="https://www.linkedin.com" class="fa fa-linkedin px-3"></a>
 <a href="https://www.twitter.com" class="fa fa-twitter px-3"></a>
