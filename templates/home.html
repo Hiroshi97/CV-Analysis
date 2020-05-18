@@ -2,6 +2,7 @@
 {% block title %}Upload{% endblock %}
 {% block header%}<h2>CV TEXT ANALYZER</h2>{% endblock %}
 {% block content%}
+<link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
 <div class="main">
   <form action="api/result" method="POST" id="uploadForm" enctype="multipart/form-data">
     <div class="upload">
@@ -35,7 +36,7 @@
     </div>
   </form>
 </div>
-<script src="{{url_for('static', filename='js/app.js')}}"></script>
+<script src="{{url_for('static', filename='js/service-worker.js')}}"></script>
 <script src="{{url_for('static', filename='js/upload.js')}}"></script>
 
 {% endblock %} 

@@ -61,11 +61,14 @@ def process():
     if request.method == 'POST':
         f = request.files['cvfile']
         
-        text = extract_text_from_pdf(f)
-
         #PDF Preview
         pdfstring = base64.b64encode(f.read())
         pdfstring = pdfstring.decode('ascii')
+
+        f.seek(0)
+        filename = "File name: " + f.filename
+        filesize = "File size: " + str(int(len(f.read())/1024)) + "kb"
+        text = extract_text_from_pdf(f)
 
         #Word count metrics
         word_count_num = len(text.split())
@@ -80,10 +83,6 @@ def process():
         #Count word frequency
         word_list = word_filter(word_frequency(text))
         essential_section = word_matching(word_frequency(text))
-
-        #File info
-        filename = "File name: " + f.filename
-        filesize = "File size: " + str(int(len(f.read())/1024)) + "kb"
         word_count = "Word Count: " + str(word_count_num)
 
         #Four factors
@@ -142,9 +141,9 @@ def firstPersonSentiment(text):
 def word_metric(word_count):
     if  450 <= word_count <= 650:
         metric_result = "Appropriate word count"
-        word_count_warning = "Top resumes are generally between 450 and 650 words long. Congrats! your resume has " + str(word_count) + " words."
+        word_count_warning = " Top resumes are generally between 450 and 650 words long. Congrats! your resume has " + str(word_count) + " words."
     else:
-        word_count_warning = "Top resumes are generally between 450 and 650 words long. Unfortunately, your resume has " + str(word_count) + " words."
+        word_count_warning = " Top resumes are generally between 450 and 650 words long. Unfortunately, your resume has " + str(word_count) + " words."
         if word_count <= 449:
             metric_result = "Add more words!"
         if word_count >= 650:
@@ -284,7 +283,8 @@ def word_matching(dictObject):
                 else:
                     result[5] = "References: not included"
 
-        result[0] = "Total score: " + str(score)
+        #result[0] = "Total score: " + str(score)
+        result[0] = score
     return result
 
 @app.route('/sw.js')
