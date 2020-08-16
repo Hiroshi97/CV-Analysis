@@ -77,6 +77,9 @@ def process():
         #Spellchecker
         spellcheck = spellchecker(text)
 
+        # Bullet points counter
+        bpCounter = bulletPointCounter(text)
+
         #firstPersonSentiment
         fps = firstPersonSentiment(text)
 
@@ -87,7 +90,7 @@ def process():
 
         #Four factors
         impact = [filename, filesize, word_count, fps[0], fps[1]]
-        brevity = [spellcheck[0], spellcheck[1], word_count_result, word_count_num]
+        brevity = [spellcheck[0], bpCounter, word_count_result, word_count_num]
         style = essential_section
         soft_skills = ["a", "b", "c", "d", "e"]
 
@@ -114,10 +117,19 @@ def spellchecker(text):
 
     cleanList = shortenedWords.copy()
 
-    for s in range(len(shortenedWords)):
-        shortenedWords[s] = sc.correction(shortenedWords[s])
-
     return [cleanList, shortenedWords]
+
+# Count bullet points
+def bulletPointCounter(text):
+    bpRegex = '•\s(.+?)((?=(•))|(?=($)))'
+
+    bpList = re.findall(bpRegex, text, re.IGNORECASE | re.MULTILINE)
+    bpCount = len(bpList)
+
+    processed = "Your CV has " + str(bpCount) + " total bullet points."
+    return processed
+
+
 
 #firstPersonSentiment
 def firstPersonSentiment(text):
@@ -293,4 +305,3 @@ def sw():
 
 if __name__ == '__main__':
     app.run()
-
