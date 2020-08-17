@@ -13,9 +13,15 @@ var impact_button = document.getElementsByClassName(
 
   var section = document.getElementsByClassName("section-criteria");
 
+  var preview = document.getElementsByClassName("pdfPreview");
+
+
   function setNone() {
+	
 	for (var i = 0; i < section.length; i++) {
 	  section[i].style.display = "none";
+	  preview[i].style.width = "0";
+	  preview[i].style.height = "0";
 	}
   }
   
@@ -24,6 +30,8 @@ var impact_button = document.getElementsByClassName(
 	title.innerText = "Impact";
 	setNone();
 	document.getElementById('impact-section').style.display = "block";
+	document.getElementById('impact-preview').style.width = "100%";
+	document.getElementById('impact-preview').style.height = "960px";
   };
 
   brevity_button.onclick = function () {
@@ -31,6 +39,8 @@ var impact_button = document.getElementsByClassName(
 	title.innerText = "Brevity";
 	setNone();
 	document.getElementById('brevity-section').style.display = "block";
+	document.getElementById('brevity-preview').style.width = "100%";
+	document.getElementById('brevity-preview').style.height = "960px";
   };
 
   style_button.onclick = function () {
@@ -38,6 +48,8 @@ var impact_button = document.getElementsByClassName(
 	title.innerText = "Style";
 	setNone();
 	document.getElementById('style-section').style.display = "block";
+	document.getElementById('style-preview').style.width = "100%";
+	document.getElementById('style-preview').style.height = "960px";
   };
 
   soft_skills_button.onclick = function () {
@@ -45,10 +57,19 @@ var impact_button = document.getElementsByClassName(
 	title.innerText = "Soft Skills";
 	setNone();
 	document.getElementById('soft-skills-section').style.display = "block";
+	document.getElementById('soft-skills-preview').style.width = "100%";
+	document.getElementById('soft-skills-preview').style.height = "960px";
   };
 
   //Default value
   impact_button.click();
+
+  var impactScore = parseInt(document.getElementById('impact-score').innerText.split('%').join(""));
+  var brevityScore = parseInt(document.getElementById('brevity-score').innerText.split('%').join(""));
+  var styleScore = parseInt(document.getElementById('style-score').innerText.split('%').join(""));
+  var softskillsScore = parseInt(document.getElementById('soft-skills-score').innerText.split('%').join(""));
+  var overallScore = ((impactScore + brevityScore + styleScore + softskillsScore)/4.0).toFixed(1);
+  var overallScoreString = overallScore.toString() + "%";
 
   Chart.pluginService.register({
 	beforeDraw: function(chart) {
@@ -139,7 +160,7 @@ var config = {
 type: 'doughnut',
 data: {
   datasets: [{
-	data: [25, 100],
+	data: [overallScore, 100 - overallScore],
 	backgroundColor: [
 	  "#FF6347",
 	  "#D3D3D3",
@@ -149,24 +170,24 @@ data: {
 	  "#D3D3D3",
 	]
   }],
-  labels: ["Your Score", "Total Score"]
+  labels: ["Your Score"]
 },
 options: {
 	legend: {
 		reverse: true,
-		display: false
+		display: true
 	},
 	title: {
 		display: true,
 		text: 'Overall Score',
 		position: 'bottom'
 	},
-	// tooltips: {
-	// 	enabled: false
-	// },
+	tooltips: {
+		enabled: false
+	},
   	elements: {
 	center: {
-	  text: '25%',
+	  text: overallScoreString,
 	  color: '#FF6347', // Default is #000000
 	  fontStyle: 'Arial', // Default is Arial
 	  sidePadding: 20, // Default is 20 (as a percentage)
