@@ -90,7 +90,7 @@ def process():
 
         #Four factors
         impact = [filename, filesize, word_count, fps[0], fps[1]]
-        brevity = [spellcheck[0], bpCounter, word_count_result, word_count_num]
+        brevity = [spellcheck, bpCounter, word_count_result, word_count_num]
         style = essential_section
         soft_skills = ["a", "b", "c", "d", "e"]
 
@@ -106,8 +106,10 @@ def spellchecker(text):
 
     #Spellchecking
     emailRegex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
-    clonedList = text
-    misspelled = sc.unknown(clonedList.split())
+    clonedList = re.sub('[\W+]',' ', text)
+    freshList = clonedList.split()
+    misspelled = sc.unknown(freshList)
+
 
     for m in misspelled:
         if(re.search(emailRegex,m)):
@@ -115,9 +117,11 @@ def spellchecker(text):
         cleanString = re.sub('\W+','', m)
         shortenedWords.append(reduce_lengthening(cleanString))
 
-    cleanList = shortenedWords.copy()
+    cleanList = shortenedWords.copy()    
 
-    return [cleanList, shortenedWords]
+    output = "You may have misspelled the following words: " + '\n' + ', '.join(cleanList)
+
+    return output
 
 # Count bullet points
 def bulletPointCounter(text):
