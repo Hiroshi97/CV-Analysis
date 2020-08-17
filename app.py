@@ -107,8 +107,8 @@ def spellchecker(text):
     #Spellchecking
     emailRegex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
     clonedList = re.sub('[\W+]',' ', text)
-    freshList = clonedList.split()
-    misspelled = sc.unknown(freshList)
+    clonedList = clonedList.split()
+    misspelled = sc.unknown(clonedList)
 
 
     for m in misspelled:
@@ -125,12 +125,12 @@ def spellchecker(text):
 
 # Count bullet points
 def bulletPointCounter(text):
-    bpRegex = '•\s(.+?)((?=(•))|(?=($)))'
+    bulletPointRegex = '•\s(.+?)((?=(•))|(?=($)))'
 
-    bpList = re.findall(bpRegex, text, re.IGNORECASE | re.MULTILINE)
-    bpCount = len(bpList)
+    bulletPointList = re.findall(bpRegex, text, re.IGNORECASE | re.MULTILINE)
+    bulletPointCount = len(bulletPointList)
 
-    processed = "Your CV has " + str(bpCount) + " total bullet points."
+    processed = "Your CV has " + str(bulletPointCount) + " total bullet points."
     return processed
 
 
@@ -140,7 +140,7 @@ def firstPersonSentiment(text):
     textClone = nltk.word_tokenize(text)
     textCloneTag= nltk.pos_tag(textClone)
     
-    tagged_sent =textCloneTag
+    tagged_sent = textCloneTag
     tagged_sent_str = ' '.join([word + '/' + pos for word, pos in tagged_sent])
 
     countFirstPerson = sum(1 for _ in re.finditer(r'\b%s\b' % re.escape("PRP"), tagged_sent_str))
