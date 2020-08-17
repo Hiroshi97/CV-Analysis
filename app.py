@@ -77,6 +77,9 @@ def process():
         #Spellchecker
         spellcheck = spellchecker(text)
 
+        # Bullet points counter
+        bpCounter = bulletPointCounter(text)
+
         #firstPersonSentiment
         fps = firstPersonSentiment(text)
 
@@ -87,7 +90,7 @@ def process():
 
         #Four factors
         impact = [filename, filesize, word_count, fps[0], fps[1]]
-        brevity = [spellcheck[0], spellcheck[1], word_count_result, word_count_num]
+        brevity = [spellcheck, bpCounter, word_count_result, word_count_num]
         style = essential_section
         soft_skills = ["a", "b", "c", "d", "e"]
 
@@ -103,8 +106,10 @@ def spellchecker(text):
 
     #Spellchecking
     emailRegex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
-    clonedList = text
-    misspelled = sc.unknown(clonedList.split())
+    clonedList = re.sub('[\W+]',' ', text)
+    clonedList = clonedList.split()
+    misspelled = sc.unknown(clonedList)
+
 
     for m in misspelled:
         if(re.search(emailRegex,m)):
@@ -112,19 +117,30 @@ def spellchecker(text):
         cleanString = re.sub('\W+','', m)
         shortenedWords.append(reduce_lengthening(cleanString))
 
-    cleanList = shortenedWords.copy()
+    cleanList = shortenedWords.copy()    
 
-    for s in range(len(shortenedWords)):
-        shortenedWords[s] = sc.correction(shortenedWords[s])
+    output = "You may have misspelled the following words: " + '\n' + ', '.join(cleanList)
 
-    return [cleanList, shortenedWords]
+    return output
+
+# Count bullet points
+def bulletPointCounter(text):
+    bulletPointRegex = '•\s(.+?)((?=(•))|(?=($)))'
+
+    bulletPointList = re.findall(bpRegex, text, re.IGNORECASE | re.MULTILINE)
+    bulletPointCount = len(bulletPointList)
+
+    processed = "Your CV has " + str(bulletPointCount) + " total bullet points."
+    return processed
+
+
 
 #firstPersonSentiment
 def firstPersonSentiment(text):
     textClone = nltk.word_tokenize(text)
     textCloneTag= nltk.pos_tag(textClone)
     
-    tagged_sent =textCloneTag
+    tagged_sent = textCloneTag
     tagged_sent_str = ' '.join([word + '/' + pos for word, pos in tagged_sent])
 
     countFirstPerson = sum(1 for _ in re.finditer(r'\b%s\b' % re.escape("PRP"), tagged_sent_str))
@@ -293,4 +309,3 @@ def sw():
 
 if __name__ == '__main__':
     app.run()
-
