@@ -126,8 +126,8 @@ def spellchecker(text):
         cleanString = re.sub('\W+','', m)
         shortenedWords.append(reduce_lengthening(cleanString))
 
-    cleanList = shortenedWords.copy()
-
+    cleanList = shortenedWords.copy()    
+    
     output = "You may have misspelled the following words: " + '\n' + ', '.join(cleanList)
 
     return [output, cleanList]
@@ -147,7 +147,7 @@ def firstPersonSentiment(text):
     textClone = nltk.word_tokenize(text)
     textCloneTag= nltk.pos_tag(textClone)
     
-    tagged_sent =textCloneTag
+    tagged_sent = textCloneTag
     tagged_sent_str = ' '.join([word + '/' + pos for word, pos in tagged_sent])
 
     countFirstPerson = sum(1 for _ in re.finditer(r'\b%s\b' % re.escape("PRP"), tagged_sent_str))
@@ -338,4 +338,3 @@ def sw():
 
 if __name__ == '__main__':
     app.run()
-
