@@ -27,8 +27,9 @@ import nltk
 #Regular Expression
 import re
 
-#PyMuPDF
+#PyMuPDFf
 import fitz
+
 
 from spellchecker import SpellChecker
 
