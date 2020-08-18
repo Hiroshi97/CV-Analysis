@@ -48,6 +48,9 @@ from fuzzywuzzy import fuzz
 # base64 encode
 import base64
 
+# itemgetter
+from operator import itemgetter
+
 app = Flask(__name__)
 #sslify = SSLify(app)
 
@@ -83,6 +86,9 @@ def process():
         # Bullet points counter
         bpCounter = bulletPointCounter(text)
 
+        # Quantify bullet points
+        bpQuantify = quantifyBulletPoints(text)
+
         #firstPersonSentiment
         fps = firstPersonSentiment(text)
 
@@ -93,7 +99,7 @@ def process():
 
         #Four factors
         impact = [0, filename, filesize, word_count, fps[0], fps[1]]
-        brevity = [0, spellcheck[0], bpCounter, word_count_result, word_count_num]
+        brevity = [0, spellcheck[0], bpCounter[2], word_count_result, bpQuantify]
         style = essential_section[0:4]
         soft_skills = [0, "a", "b", "c", "d", "e"]
         length = [len(impact), len(brevity), len(style), len(soft_skills)]
@@ -127,8 +133,12 @@ def spellchecker(text):
         shortenedWords.append(reduce_lengthening(cleanString))
 
     cleanList = shortenedWords.copy()    
+
+    if not cleanList:
+        output = "Your resume is free of spelling errors! Congratulations!"
+    else:
+        output = "You may have misspelled the following words: " + '\n' + ', '.join(cleanList)   
     
-    output = "You may have misspelled the following words: " + '\n' + ', '.join(cleanList)
 
     return [output, cleanList]
 
@@ -140,7 +150,34 @@ def bulletPointCounter(text):
     bulletPointCount = len(bulletPointList)
 
     processed = "Your CV has " + str(bulletPointCount) + " total bullet points."
-    return processed
+    return [bulletPointList, bulletPointCount, processed]
+
+def stringHasNumbers(str):
+    return any(char.isdigit() for char in str)
+
+# Quantify bullet points
+def quantifyBulletPoints(text):
+    
+    # 1. Extract content of bullet points
+    bp = bulletPointCounter(text)
+    contentList = []
+    quantifiedCount = 0
+
+    bulletPointCount = bp[1]
+    bulletPointList = bp[0]
+
+    contentList.append(list(map(itemgetter(0), bulletPointList)))
+
+    # 2. Count how many of those strings contain a number
+
+    for i in contentList[0]:
+        if(stringHasNumbers(i)):
+            quantifiedCount += 1
+    result = "Out of " + str(bulletPointCount) + " bullet points in your CV, " + str(quantifiedCount) + " has been quantified."
+
+
+    return result
+
 
 #firstPersonSentiment
 def firstPersonSentiment(text):
