@@ -21,7 +21,7 @@ from matplotlib.figure import Figure
 import base64
 
 #Grammar & Spelling Lib
-import pylanguagetool
+#import pylanguagetool
 import nltk
 
 #Regular Expression
@@ -127,7 +127,7 @@ def spellchecker(text):
 def bulletPointCounter(text):
     bulletPointRegex = '•\s(.+?)((?=(•))|(?=($)))'
 
-    bulletPointList = re.findall(bpRegex, text, re.IGNORECASE | re.MULTILINE)
+    bulletPointList = re.findall(bulletPointRegex, text, re.IGNORECASE | re.MULTILINE)
     bulletPointCount = len(bulletPointList)
 
     processed = "Your CV has " + str(bulletPointCount) + " total bullet points."
@@ -209,6 +209,21 @@ def word_filter(dictObject):
  
     return new_counts
 
+def word_match(key,list,li,score,output):
+    for x in list:
+        if fuzz.token_sort_ratio(key.lower(),x.lower()) > 80:
+            li = False          
+            print(output + " achieved!!!")
+            print(fuzz.token_sort_ratio(key.lower(),x.lower()))
+            print(key)
+            score += 20
+            print("score: ", score)
+            result = output + ": included"
+            break
+        else:
+            result = output + ": not included"
+    return li,score,result    
+
 
 # word_matching is used for essential part
 # it will find the word that match the lists and return related result
@@ -230,74 +245,19 @@ def word_matching(dictObject):
     for(key, value) in dictObject.items():
         #print(key)
         if li1:
-            for x in list1:
-                if fuzz.token_sort_ratio(key.lower(),x.lower()) > 80:
-                    li1 = False
-                    print("career objective achieved!!!")
-                    print(fuzz.token_sort_ratio(key.lower(),x.lower()))
-                    print(key)
-                    score += 20
-                    print("score: ", score)
-                    result[1] = "Career objective: included"
-                    break
-                else:
-                    result[1] = "Career objective: not included"
+            li1,score,result[1] = word_match(key,list1,li1,score,"Career objective")
 
         if li2:
-            for x in list2:
-                if fuzz.token_sort_ratio(key.lower(),x.lower()) > 80:
-                    li2 = False
-                    print("education achieved!!!")
-                    print(fuzz.token_sort_ratio(key.lower(),x.lower()))
-                    print(key)
-                    score += 20
-                    print("score: ", score)
-                    result[2] = "Education & Qualification: included"
-                    break
-                else:
-                    result[2] = "Education & Qualification: not included"
-
+            li2,score,result[2] = word_match(key,list2,li2,score,"education")
+                
         if li3:
-            for x in list3:
-                if fuzz.token_sort_ratio(key.lower(),x.lower()) > 80:
-                    li3 = False
-                    print("employment achieved!!!")
-                    print(fuzz.token_sort_ratio(key.lower(),x.lower()))
-                    print(key)
-                    score += 20
-                    print("score: ", score)
-                    result[3] = "Employment History: included"
-                    break
-                else:
-                    result[3] = "Employment History: not included"
-
+            li3,score,result[3] = word_match(key,list3,li3,score,"Employment History")
+            
         if li4:
-            for x in list4:
-                if fuzz.token_sort_ratio(key.lower(),x.lower()) > 80:
-                    li4 = False
-                    print("skill achieved!!!")
-                    print(fuzz.token_sort_ratio(key.lower(),x.lower()))
-                    print(key)
-                    score += 20
-                    print("score: ", score)
-                    result[4] = "Skills summary: included"
-                    break
-                else:
-                    result[4] = "Skills summary: not included"
+            li4,score,result[4] = word_match(key,list4,li4,score,"Skill")
 
         if li5:
-            for x in list5:
-                if fuzz.token_sort_ratio(key.lower(),x.lower()) > 80:
-                    li5 = False
-                    print("reference achieved!!!")
-                    print(fuzz.token_sort_ratio(key.lower(),x.lower()))
-                    print(key)
-                    score += 20
-                    print("score: ", score)
-                    result[5] = "References: included"
-                    break
-                else:
-                    result[5] = "References: not included"
+            li5,score,result[5] = word_match(key,list5,li5,score,"References")
 
         #result[0] = "Total score: " + str(score)
         result[0] = score
