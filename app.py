@@ -152,9 +152,6 @@ def bulletPointCounter(text):
     processed = "Your CV has " + str(bulletPointCount) + " total bullet points."
     return [bulletPointList, bulletPointCount, processed]
 
-def stringHasNumbers(str):
-    return any(char.isdigit() for char in str)
-
 # Quantify bullet points
 def quantifyBulletPoints(text):
     
@@ -170,8 +167,11 @@ def quantifyBulletPoints(text):
 
     # 2. Count how many of those strings contain a number
 
-    for i in contentList[0]:
-        if(stringHasNumbers(i)):
+    quantifyRegEx = r'\b[^.,/a-zA-Z\-+\]](\d+)(?!\.|,)\b'
+    clonedList = contentList[0].copy()
+    
+    for i in clonedList:
+        if(re.search(quantifyRegEx,i)):
             quantifiedCount += 1
     result = "Out of " + str(bulletPointCount) + " bullet points in your CV, " + str(quantifiedCount) + " has been quantified."
 
