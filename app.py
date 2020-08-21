@@ -27,6 +27,9 @@ import nltk
 #Regular Expression
 import re
 
+#PyMuPDF
+import fitz
+
 from spellchecker import SpellChecker
 
 # Flask initialization
@@ -46,7 +49,7 @@ from fuzzywuzzy import fuzz
 import base64
 
 app = Flask(__name__)
-sslify = SSLify(app)
+#sslify = SSLify(app)
 
 #CORS
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
@@ -60,82 +63,116 @@ def index():
 def process():
     if request.method == 'POST':
         f = request.files['cvfile']
-
-        sc = SpellChecker()
-        sc.word_frequency.load_dictionary('static/test_dict.json')
-        shortenedWords = []
-
+        
+        #PDF Preview
         pdfstring = base64.b64encode(f.read())
         pdfstring = pdfstring.decode('ascii')
 
-
-        filename = f.filename
-        filesize = str(int(len(f.read())/1024)) + "kb"
-
+        f.seek(0)
+        filename = "File name: " + f.filename
+        filesize = "File size: " + str(int(len(f.read())/1024)) + "kb"
         text = extract_text_from_pdf(f)
-        word_count = len(text.split())
-        word_result = word_metric(word_count)
-        text_array = text.strip().split('\n')
-        for i in range (len(text_array)):
-            text_array[i] = "<p>" + text_array[i] + "</p>"
-        
-        text = Markup(''.join(text_array))
-    
-        if  450 <= word_count <= 650:
-            word_count_warning = "Top resumes are generally between 450 and 650 words long. Congrats! your resume has " + str(word_count) + " words."
-        else:
-            word_count_warning = "Top resumes are generally between 450 and 650 words long. Unfortunately, your resume has " + str(word_count) + " words."
 
+        #Word count metrics
+        word_count_num = len(text.split())
+        word_count_result = word_metric(word_count_num)
+
+        #Spellchecker
+        spellcheck = spellchecker(text)
+
+        # Bullet points counter
+        bpCounter = bulletPointCounter(text)
 
         #firstPersonSentiment
-        textClone = nltk.word_tokenize(text)
-        textCloneTag= nltk.pos_tag(textClone)
-        
-        tagged_sent =textCloneTag
-        tagged_sent_str = ' '.join([word + '/' + pos for word, pos in tagged_sent])
-
-        countFirstPerson = sum(1 for _ in re.finditer(r'\b%s\b' % re.escape("PRP"), tagged_sent_str))
-
-        countNoun = sum(1 for _ in re.finditer(r'\b%s\b' % re.escape("NN"), tagged_sent_str))
-        countActionVerb = sum(1 for _ in re.finditer(r'\b%s\b' % re.escape("VB"), tagged_sent_str))
-    
-        processed="Your CV has " + str(countFirstPerson) + " instances of first-person usage."
-
-        nounverb = "There were " + str(countNoun) + " nouns in your CV. It contains "+ str(countActionVerb) + " action verbs."
-
-        #Spellchecking
-        emailRegex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
-        clonedList = text
-        misspelled = sc.unknown(clonedList.split())
-
-        for m in misspelled:
-            if(re.search(emailRegex,m)):
-                continue
-            cleanString = re.sub('\W+','', m)
-            shortenedWords.append(reduce_lengthening(cleanString))
-
-        cleanList = shortenedWords.copy()
-
-        for s in range(len(shortenedWords)):
-            shortenedWords[s] = sc.correction(shortenedWords[s])
+        fps = firstPersonSentiment(text)
 
         #Count word frequency
-        word_list = word_filter(word_frequency(clonedList))
-        essential_section = word_matching(word_frequency(clonedList))
-        text = Markup(''.join(text_array))
+        word_list = word_filter(word_frequency(text))
+        essential_section = word_matching(word_frequency(text))
+        word_count = "Word Count: " + str(word_count_num)
 
-        return render_template("result.html", filename=filename, filesize=filesize, word_count=word_count, misspelled=cleanList, corrected=shortenedWords,
-        word_list = word_list, pdfstring=pdfstring, word_result=word_result, processed = processed, nounverb = nounverb, essential_section = essential_section)
+        #Four factors
+        impact = [0, filename, filesize, word_count, fps[0], fps[1]]
+        brevity = [0, spellcheck[0], bpCounter, word_count_result, word_count_num]
+        style = essential_section[0:4]
+        soft_skills = [0, "a", "b", "c", "d", "e"]
+        length = [len(impact), len(brevity), len(style), len(soft_skills)]
+
+        #Highlighted files
+        pdfstrings = []
+        pdfstrings.append(pdfstring) #Original file
+        pdfstrings.append(highlightText(spellcheck[1], f, (1, 0, 0)))
+        pdfstrings.append(highlightText(essential_section[6], f, (0, 1, 0)))
+
+        return render_template("result.html", impact=impact, brevity=brevity, style=style, soft_skills=soft_skills, pdfstrings=pdfstrings, length=length)
+    return redirect(url_for('index'))
+
+
+#Spellchecker
+def spellchecker(text):
+    sc = SpellChecker()
+    sc.word_frequency.load_dictionary('static/test_dict.json')
+    shortenedWords = []
+
+    #Spellchecking
+    emailRegex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
+    clonedList = re.sub('[\W+]',' ', text)
+    clonedList = clonedList.split()
+    misspelled = sc.unknown(clonedList)
+
+    for m in misspelled:
+        if(re.search(emailRegex,m)):
+            continue
+        cleanString = re.sub('\W+','', m)
+        shortenedWords.append(reduce_lengthening(cleanString))
+
+    cleanList = shortenedWords.copy()    
+    
+    output = "You may have misspelled the following words: " + '\n' + ', '.join(cleanList)
+
+    return [output, cleanList]
+
+# Count bullet points
+def bulletPointCounter(text):
+    bulletPointRegex = '•\s(.+?)((?=(•))|(?=($)))'
+
+    bulletPointList = re.findall(bulletPointRegex, text, re.IGNORECASE | re.MULTILINE)
+    bulletPointCount = len(bulletPointList)
+
+    processed = "Your CV has " + str(bulletPointCount) + " total bullet points."
+    return processed
+
+#firstPersonSentiment
+def firstPersonSentiment(text):
+    textClone = nltk.word_tokenize(text)
+    textCloneTag= nltk.pos_tag(textClone)
+    
+    tagged_sent = textCloneTag
+    tagged_sent_str = ' '.join([word + '/' + pos for word, pos in tagged_sent])
+
+    countFirstPerson = sum(1 for _ in re.finditer(r'\b%s\b' % re.escape("PRP"), tagged_sent_str))
+
+    countNoun = sum(1 for _ in re.finditer(r'\b%s\b' % re.escape("NN"), tagged_sent_str))
+    countActionVerb = sum(1 for _ in re.finditer(r'\b%s\b' % re.escape("VB"), tagged_sent_str))
+
+    processed="Your CV has " + str(countFirstPerson) + " instances of first-person usage."
+
+    nounverb = "There were " + str(countNoun) + " nouns in your CV. It contains "+ str(countActionVerb) + " action verbs."
+
+    return [processed, nounverb]
 
 def word_metric(word_count):
-    if word_count <= 449:
-        metric_result = "Add more words!"
-    if word_count >= 650:
-        metric_result = "Reduce amount of words!"
-    if word_count >= 450 & word_count <= 649:
+    if  450 <= word_count <= 650:
         metric_result = "Appropriate word count"
+        word_count_warning = " Top resumes are generally between 450 and 650 words long. Congrats! your resume has " + str(word_count) + " words."
+    else:
+        word_count_warning = " Top resumes are generally between 450 and 650 words long. Unfortunately, your resume has " + str(word_count) + " words."
+        if word_count <= 449:
+            metric_result = "Add more words!"
+        if word_count >= 650:
+            metric_result = "Reduce amount of words!"
 
-    return metric_result
+    return metric_result + word_count_warning
 
 def extract_text_from_pdf(file):
     resource_manager = PDFResourceManager()
@@ -186,7 +223,7 @@ def word_matching(dictObject):
     # dictObject variable must come from word_frequency result
     list1 = ["career", "objective", "summary", "profile"]
     list2 = ["elementary","education", "qualification", "training", "academic", "GPA", "Bachelor", "degree", "master", "PhD", "high school", "diploma", "accociate degree", "TAFE", "certificates", "archiement"]
-    list3 = ["part-time","employment", "Experience", "work", "placement", "internship", "profesional", "volunteer", "practicums", "job"]
+    list3 = ["part-time","employment", "Experience", "work", "placement", "internship", "professional", "volunteer", "practicums", "job"]
     list4 = ["skill", "attribute", "strength", "key skills", "know", "knew", "programming", "java", "language", "c#", "flask", "python", "AWS", "d3"]
     list5 = ["referee", "reference"]
     li1 = True
@@ -196,7 +233,7 @@ def word_matching(dictObject):
     li5 = True
     score = 0
     result = ["", "", "", "", "", ""]
-
+    highlight = []
     for(key, value) in dictObject.items():
         #print(key)
         if li1:
@@ -208,6 +245,7 @@ def word_matching(dictObject):
                     print(key)
                     score += 20
                     print("score: ", score)
+                    highlight.append(key)
                     result[1] = "Career objective: included"
                     break
                 else:
@@ -222,6 +260,7 @@ def word_matching(dictObject):
                     print(key)
                     score += 20
                     print("score: ", score)
+                    highlight.append(key)
                     result[2] = "Education & Qualification: included"
                     break
                 else:
@@ -236,6 +275,7 @@ def word_matching(dictObject):
                     print(key)
                     score += 20
                     print("score: ", score)
+                    highlight.append(key)
                     result[3] = "Employment History: included"
                     break
                 else:
@@ -250,6 +290,7 @@ def word_matching(dictObject):
                     print(key)
                     score += 20
                     print("score: ", score)
+                    highlight.append(key)
                     result[4] = "Skills summary: included"
                     break
                 else:
@@ -264,13 +305,32 @@ def word_matching(dictObject):
                     print(key)
                     score += 20
                     print("score: ", score)
+                    highlight.append(key)
                     result[5] = "References: included"
                     break
                 else:
                     result[5] = "References: not included"
 
-        result[0] = "Total score: " + str(score)
+        #result[0] = "Total score: " + str(score)
+        result[0] = score
+        result.append(highlight)
     return result
+
+def highlightText(textArr, f, color):
+    f.seek(0)
+    doc = fitz.Document(stream=bytearray(f.read()), filename = 'cv.pdf')
+    if (len(textArr) > 0):
+        for p in doc.pages():
+            for text in textArr:
+                text_instances = p.searchFor(text)
+                for inst in text_instances:
+                    highlight = p.addHighlightAnnot(inst)
+                    highlight.setColors({"stroke":color, "fill":(1, 1, 1)})
+                    highlight.update()
+
+    memoryStream = doc.write()
+    doc.close()
+    return base64.b64encode(memoryStream).decode('ascii')
 
 @app.route('/sw.js')
 def sw():
@@ -278,4 +338,3 @@ def sw():
 
 if __name__ == '__main__':
     app.run()
-

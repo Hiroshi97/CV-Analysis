@@ -1,4 +1,6 @@
-
+/* -------------------------------- */
+/*BASIC SETUP*/
+/* -------------------------------- */
 
 html,
 body {
@@ -9,28 +11,135 @@ body {
 
 body {
   font-family: "Roboto", sans-serif;
-  background: url('background.jpg') no-repeat center center fixed; 
+  background: url("background.jpg") no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
 }
 
+.row {
+  max-width: 100%;
+  margin: 0 auto 0 auto;
+}
+
+section {
+  padding: 70px 0;
+  height: 100vh;
+}
+
+/* -------------------------------- */
+/*PREVIEW*/
+/* -------------------------------- */
 .preview {
   text-align: center;
   margin-top: 100px;
 }
 
+/* -------------------------------- */
+/*SLOGAN - BANNER*/
+/* -------------------------------- */
+
+.banner {
+  color: white;
+  
+  background: -webkit-gradient(
+      linear,
+      right top,
+      left top,
+      from(rgba(55, 0, 255, 0.5)),
+      to(rgba(4, 0, 250, 0.158))
+    )
+    no-repeat;
+  background-size: 100% 100%;
+}
+
+.banner-slogan {
+  width: 100%;
+  display: inline-block;
+  margin: auto;
+  padding-top: 150px;
+  padding-bottom: 50px; 
+}
+
+.slogan {
+  padding-top: 90px;
+  padding-left: 10%;
+  float: left;
+  width: 50%;
+}
+
+.slogan h1 {
+  font: simplifica;
+  font-weight: bold;
+}
+
+.img-preview {
+  float: left;
+  width: 50%;
+  overflow: hidden;
+}
+
+
+/* -------------------------------- */
+/*UPLOAD FORM*/
+/* -------------------------------- */
+
 .main {
-  width: 90vh;
+  width: 100%;
   margin: 0 auto;
-  padding: 30px 20px;
+  padding-left: 100px;
   min-height: calc(100vh - 93.69px - 121.8px);
+  padding-top: 100px;
+  padding-bottom: 100px;
+}
+
+.instruction {
+  padding-top:40px;
+  padding-left:40px;
+  float: left;
+  width: 50%;
+  color: white;
+  border: 2px dashed white;
+  border-radius: 5%;
+  font-weight: bold;
+}
+
+.instruction h1{
+  margin: 0 auto;
+  text-align:center;
+  font-weight: bold;
+}
+
+.ins-step div {
+  color: black;
+  border: 2px solid white;
+  background: white;
+  display: inline-block;
+  border-radius: 50%;
+  height: 40px;
+  width: 40px;
+  text-align: center;
+  padding: 5px;
+  float: left;
+  font-size: 100%;
+  margin-right: 25px;
+}
+
+.ins-step p {
+  font-size: 100%;
+  margin-right: 25px;
+}
+
+#uploadForm {
+  padding-left: 60%;
+  padding-top: 10px;
+  width: 100%;
 }
 
 .upload {
   position: relative;
-  width: 400px;
+  width: 70%;
   min-height: 445px;
   box-sizing: border-box;
   border-radius: 5px;
@@ -43,15 +152,17 @@ body {
   transform: translateY(20px);
   opacity: 0;
   margin: auto;
+  float: left;
+  height: 200px;
 }
 .upload .upload-files header {
-  background: #5f6163;   /*#4f6072*/
+  background: #5f6163; /*#4f6072*/
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
   text-align: center;
 }
 .upload .upload-files header p {
-  color: lightgray;    /*fff*/
+  color: lightgray; /*fff*/
   font-size: 40px;
   margin: 0;
   padding: 50px 0;
@@ -428,79 +539,100 @@ body {
   color: #ffffff;
 }
 
-.result {
-  color: white;
+/* -------------------------------- */
+/*ABOUT*/
+/* -------------------------------- */
+#about {
+  width: 100%;
+  background-color: white;
+  height: 140vh;
   text-align: center;
-}
-.a {
-	background-color: Transparent;
-    background-repeat:no-repeat;
-    border: none;
-    cursor:pointer;
-    overflow: hidden;
-	float:center;
+  position: relative;
 }
 
-.dropdown{
-    display: inline;
-}
-	
-	
-.result .dropdown{
-	text-align: center;
-	padding: 20px 0px;
-	margin-left: 16px;
-  margin-right: 16px;
-  top: 52px;
-  left: -27px;
-  padding: 20px;
+#about p{
+  font-size: larger;
 }
 
-
-.result .dropdown-menu > li > a {
-  padding: 5px 10px; 
+#about .column {
+  float: left;
+  width: 33.33%;
+  vertical-align: middle;
+  padding-left: 10%;
+  padding-top: 5%;
 }
 
-.result .information{
-  margin: auto;
-  /* border: 2px solid black;
-  border-radius: 10px; */
-  display:inline-block;
+#about .column .card img{
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-
-.result p{
-  font-size: medium;
+#about h2 {
+  font-weight: bold;
+  padding-left: 30px;
 }
 
-hr {
-  border: 4px solid black;
+.card-img-top {
+  padding-top: 10px;
 }
+
+/* -------------------------------- */
+/*HEADER*/
+/* -------------------------------- */
 
 #header {
   width: 100%;
-  height:10%;
-  text-align: center;
-  padding: 20px 0;
+  height: 10%;
+  padding: 20px 20px;
   position: relative;
-  color:white;
+  color: white;
+  background-color: #001f3f;
 }
 
 #header h2 {
   font-size: xx-large;
   font-weight: bold;
   font: cambria;
+  float: left;
 }
 
+.main-nav {
+  float: right;
+  
+}
+
+.main-nav ul{
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+
+}
+
+.main-nav ul li{
+  display: inline-block;
+  padding: 0px 20px;
+  margin-top: 5px;
+}
+
+.main-nav ul li a:link, .main-nav ul li a:visited {
+  color: white;
+  font-size: 120%;
+}
+
+/* -------------------------------- */
+/*FOOTER*/
+/* -------------------------------- */
+
 #footer {
-  background-color: #383838;
+  background-color: #001f3f;
   left: 0;
   bottom: 0;
   width: 100%;
   height: 13%;
   text-align: center;
-  /* position: fixed; */
-  color:white;
+  position: relative;
+  color: white;
 }
 
 #footer p {
@@ -511,6 +643,10 @@ hr {
 #footer a {
   color: white;
 }
+
+/* -------------------------------- */
+/*MISCELLANEOUS*/
+/* -------------------------------- */
 
 @-webkit-keyframes fadeup {
   to {
@@ -550,9 +686,11 @@ hr {
     opacity: 1;
   }
 }
+
 @media (max-width: 400px) {
-  .upload {
+  .upload, .instruction {
     width: 100%;
     height: 100%;
   }
 }
+

@@ -1,8 +1,75 @@
 {% extends 'base.html' %} 
 {% block title %}Upload{% endblock %}
-{% block header%}<h2>CV TEXT ANALYZER</h2>{% endblock %}
+{% block header%}
+<link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
+<h2><img src="{{url_for('static', filename='logo/logo-64.png')}}" alt=""/> CV TEXT ANALYZER</h2>
+<nav class="main-nav">
+  <ul>
+    <li>
+      <a href="#banner">Home</a>
+    </li>
+    <li>
+      <a href="#about">About</a>
+    </li>
+  </ul>
+</nav>
+{% endblock %}
 {% block content%}
-<div class="main">
+<section class="banner">
+  <div class="row">
+    <div class="banner-slogan">
+      <div class="slogan">
+        <h1>Good Bye Bad CV.
+          <br>
+          Improve Your Chances.
+        </h1>
+        <p>Designed by top recruiters, our AI-powered platform instantly gives you tailored feedback on your resume.
+          Land 5x more interviews, opportunities and job offers.</p>
+        <a class="btn btn-success" href="#upload-form">Get started</a>
+        <a class="btn btn-secondary" href="#about"> About us </a>
+      </div>
+      <div class="img-preview">
+        <img src="{{url_for('static', filename='css/assets/images/preview.png')}}" alt="" height="450"/>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="main" id="upload-form">
+  <div class="instruction">
+    <h1>HOW TO USE</h1>
+    <br>
+    <div class="ins-step">
+      <div>1</div>
+      <p>Click 'Browse' or drag and drop your resume to the form.</p>
+    </div>
+    <br>
+    <div class="ins-step">
+      <div>2</div>
+      <p>Select your resume, waiting for the uploading progress.</p>
+    </div>
+    <br>
+    <div class="ins-step">
+      <div>3</div>
+      <p>Press 'Upload' after that to submit and have the resume processed.</p>
+    </div>
+    <br>
+    <p>*Notes: To ensure we analyse your CV precisely and yield the correct recommendations, 
+      please make sure that your resume meets some following guidelines:</p>
+    <ul>
+      <li>
+        is in PDF
+      </li>
+      <li>
+        is in English
+      </li>
+      <li>
+        is a resume and not any other filename
+      </li>
+      <li>
+        is not protected by password
+      </li>
+    </ul>
+  </div>
   <form action="api/result" method="POST" id="uploadForm" enctype="multipart/form-data">
     <div class="upload">
       <div class="upload-files">
@@ -16,7 +83,7 @@
         <div class="body" id="drop">
           <i class="fa fa-file-text-o pointer-none" aria-hidden="true"></i>
           <p class="pointer-none">
-            <b>Drag and drop</b> files here <br />
+            <strong>Drag and drop</strong> files here <br />
             or <a href="" id="triggerFile"><u>browse</a></u></a> to begin the upload
           </p>
           <input type="file" accept=".pdf" name="cvfile" multiple="multiple" />
@@ -34,15 +101,106 @@
       </div>
     </div>
   </form>
-</div>
-<script src="{{url_for('static', filename='js/app.js')}}"></script>
+</section>
+<section id="about">
+  <h1><strong>Meet the team</strong></h1>
+  <div class="row">
+    <div class="column">
+      <div class="card" style="width: 18rem;">
+        <img src="{{url_for('static', filename='css/assets/images/andy.png')}}" class="card-img-top" alt="">
+        <div class="card-body">
+          <p class="card-text"><strong>Nguyen The Anh Dinh</strong></p>
+          <p class="card-text">Backend Developer</p>
+          <p class="social-network social-circle">
+            <a href="#" class="icoFacebook" title="Facebook"><i class="fa fa-facebook"></i></a>
+            <a href="#" class="icoTwitter" title="Twitter"><i class="fa fa-twitter"></i></a>
+            <a href="#" class="icoLinkedin" title="Linkedin"><i class="fa fa-linkedin"></i></a>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="column">
+      <div class="card" style="width: 18rem;">
+        <img src="{{url_for('static', filename='css/assets/images/chee.png')}}" class="card-img-top" alt="">
+        <div class="card-body">
+          <p class="card-text"><strong>Chee Yao Cheah</strong></p>
+          <p class="card-text">Frontend Developer</p>
+          <p class="social-network social-circle">
+            <a href="#" class="icoFacebook" title="Facebook"><i class="fa fa-facebook"></i></a>
+            <a href="#" class="icoTwitter" title="Twitter"><i class="fa fa-twitter"></i></a>
+            <a href="#" class="icoLinkedin" title="Linkedin"><i class="fa fa-linkedin"></i></a>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="column">
+      <div class="card" style="width: 18rem;">
+        <img src="{{url_for('static', filename='css/assets/images/matthew.png')}}" class="card-img-top" alt="">
+        <div class="card-body">
+          <p class="card-text"><strong>Matthew Siliwan</strong></p>
+          <p class="card-text">Backend Developer</p>
+          <p class="social-network social-circle">
+            <a href="#" class="icoFacebook" title="Facebook"><i class="fa fa-facebook"></i></a>
+            <a href="#" class="icoTwitter" title="Twitter"><i class="fa fa-twitter"></i></a>
+            <a href="#" class="icoLinkedin" title="Linkedin"><i class="fa fa-linkedin"></i></a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <br>
+  <div class="row">
+    <div class="column">
+      <div class="card" style="width: 18rem;">
+        <img src="{{url_for('static', filename='css/assets/images/jun.png')}}" class="card-img-top" alt="">
+        <div class="card-body">
+          <p class="card-text"><strong>Jun Yan Low</strong></p>
+          <p class="card-text">Backend Developer</p>
+          <p class="social-network social-circle">
+            <a href="#" class="icoFacebook" title="Facebook"><i class="fa fa-facebook"></i></a>
+            <a href="#" class="icoTwitter" title="Twitter"><i class="fa fa-twitter"></i></a>
+            <a href="#" class="icoLinkedin" title="Linkedin"><i class="fa fa-linkedin"></i></a>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="column">
+      <div class="card" style="width: 18rem;">
+        <img src="{{url_for('static', filename='css/assets/images/bich.png')}}" class="card-img-top" alt="">
+        <div class="card-body">
+          <p class="card-text"><strong>Le Ngoc Bich Nguyen</strong></p>
+          <p class="card-text">Backend Developer</p>
+          <p class="social-network social-circle">
+            <a href="#" class="icoFacebook" title="Facebook"><i class="fa fa-facebook"></i></a>
+            <a href="#" class="icoTwitter" title="Twitter"><i class="fa fa-twitter"></i></a>
+            <a href="#" class="icoLinkedin" title="Linkedin"><i class="fa fa-linkedin"></i></a>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="column">
+      <div class="card" style="width: 18rem;">
+        <img src="{{url_for('static', filename='css/assets/images/callum.png')}}" class="card-img-top" alt="">
+        <div class="card-body">
+          <p class="card-text"><strong>Callum Hawke</strong></p>
+          <p class="card-text">Frontend Developer</p>
+          <p class="social-network social-circle">
+            <a href="#" class="icoFacebook" title="Facebook"><i class="fa fa-facebook"></i></a>
+            <a href="#" class="icoTwitter" title="Twitter"><i class="fa fa-twitter"></i></a>
+            <a href="#" class="icoLinkedin" title="Linkedin"><i class="fa fa-linkedin"></i></a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<script src="{{url_for('static', filename='js/service-worker.js')}}"></script>
 <script src="{{url_for('static', filename='js/upload.js')}}"></script>
-
 {% endblock %} 
 {% block footer %}
-<p>&copy; 2020 by <a href="http://domain.invalid/">SEPA Team 12.</a></p>
-<a href="https://www.facebook.com" class="fa fa-facebook px-3"></a>
-<a href="https://www.linkedin.com" class="fa fa-linkedin px-3"></a>
-<a href="https://www.twitter.com" class="fa fa-twitter px-3"></a>
-<a href="https://www.instagram.com" class="fa fa-instagram px-3"></a>
+  <p>&copy; 2020 by <a href="http://domain.invalid/">SEPA Team 12.</a></p>
+  <a href="https://www.facebook.com" class="fa fa-facebook px-3"></a>
+  <a href="https://www.linkedin.com" class="fa fa-linkedin px-3"></a>
+  <a href="https://www.twitter.com" class="fa fa-twitter px-3"></a>
+  <a href="https://www.instagram.com" class="fa fa-instagram px-3"></a>
 {% endblock %}
