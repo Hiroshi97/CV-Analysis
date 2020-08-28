@@ -6,11 +6,17 @@ from colormath.color_conversions import convert_color
 from colormath.color_diff import delta_e_cie1976
 
 class InvisibleTextFilter():
+    """ 
+    This class filters out invisible text based on text size and color. It takes two arguments, including: 
+        - deltaEThreshold: the smallest possible delta E value of two colors to determine whether they are perceptually distinguished. 
+        - textSizeThreshold: the smallest possible/allowed size of text.
+    """
+    __slots__ = 'deltaEThreshold', 'textSizeThreshold'
+    
 
-    __slots__ = 'deltaEThreshold'
-
-    def __init__(self, deltaEThreshold = 20):
+    def __init__(self, deltaEThreshold = 20, textSizeThreshold = 10):
         self.deltaEThreshold = deltaEThreshold
+        self.textSizeThreshold = textSizeThreshold
 
     def __getTextDetails(self, page: fitz.Page, zoom_f=3) -> dict:
         """
@@ -45,7 +51,6 @@ class InvisibleTextFilter():
                             text_blocks.append(span)
 
         return text_blocks
-        # return page_content
 
     def __intToRGB(self, colorCode: int) -> tuple:
         """ Return the RGB code (as a tuple) of a color integer code """
@@ -67,10 +72,11 @@ class InvisibleTextFilter():
 
         return delta_e_cie1976(lab1, lab2)
 
-    def GetInvisibleText(self, page: fitz.Page) -> []:
+    def getInvisibleText(self, page: fitz.Page) -> []:
         """ 
-        This function returns list of text whose color is similar to its background,
-        which is determined by deltaE value between text color and background color.
+        This function returns list of text whose:
+            - size is smaller than the predefined textSizeThreshold,
+            - and whose color is similar to its background, determined by deltaE value between text color and background color.
         """
 
         page_spans = self.__getTextDetails(page)
@@ -78,10 +84,12 @@ class InvisibleTextFilter():
         invisible_words = []
 
         for span in page_spans:
-            if self.__deltaE(span.get('bg_color'), span.get('color')) <= self.deltaEThreshold:
+            if (self.__deltaE(span.get('bg_color'), span.get('color')) <= self.deltaEThreshold) or (span.get('size') < self.textSizeThreshold):
                 invisible_words.append(span)
 
         return invisible_words
+
+
 
 
    
