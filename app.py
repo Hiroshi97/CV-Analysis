@@ -15,6 +15,7 @@ from pdfminer.layout import LAParams, LTTextBox, LTTextLine
 from pdfminer.pdfdevice import PDFDevice
 import PyPDF2
 import string
+from InvisibleTextFilter import InvisibleTextFilter
 
 import io
 from matplotlib.figure import Figure
@@ -73,6 +74,10 @@ def process():
         filesize = "File size: " + str(int(len(f.read())/1024)) + "kb"
         text = extract_text_from_pdf(f)
 
+        # Filter invisible text
+        invisible_text = filterHiddenText(f)
+        print(invisible_text)
+
         #Word count metrics
         word_count_num = len(text.split())
         word_count_result = word_metric(word_count_num)
@@ -106,7 +111,7 @@ def process():
 
         return render_template("result.html", impact=impact, brevity=brevity, style=style, soft_skills=soft_skills, pdfstrings=pdfstrings, length=length)
     return redirect(url_for('index'))
-
+    
 
 #Spellchecker
 def spellchecker(text):
@@ -332,9 +337,21 @@ def highlightText(textArr, f, color):
     doc.close()
     return base64.b64encode(memoryStream).decode('ascii')
 
+# Get Invisible Text
+def filterHiddenText(f):
+    f.seek(0)
+    doc = fitz.open(stream=bytearray(f.read()), filetype='pdf')
+    textFilter = InvisibleTextFilter()
+    result = []
+    for page in doc:
+        result.append(textFilter.getInvisibleText(page))
+        
+    return result
+
+
 @app.route('/sw.js')
 def sw():
     return app.send_static_file('sw.js')
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
