@@ -45,6 +45,9 @@ from fuzzywuzzy import fuzz
 # base64 encode
 import base64
 
+# itemgetter
+from operator import itemgetter
+
 app = Flask(__name__)
 #sslify = SSLify(app)
 
@@ -78,19 +81,22 @@ def process():
         text_array = text.strip().split('\n')
         for i in range (len(text_array)):
             text_array[i] = "<p>" + text_array[i] + "</p>"
-        
+
         text = Markup(''.join(text_array))
-    
+
         if  450 <= word_count <= 650:
             word_count_warning = "Top resumes are generally between 450 and 650 words long. Congrats! your resume has " + str(word_count) + " words."
         else:
             word_count_warning = "Top resumes are generally between 450 and 650 words long. Unfortunately, your resume has " + str(word_count) + " words."
 
 
+        # Quantify bullet points
+        bpQuantify = quantifyBulletPoints(text)
+
         #firstPersonSentiment
         textClone = nltk.word_tokenize(text)
         textCloneTag= nltk.pos_tag(textClone)
-        
+
         tagged_sent =textCloneTag
         tagged_sent_str = ' '.join([word + '/' + pos for word, pos in tagged_sent])
 
@@ -98,7 +104,7 @@ def process():
 
         countNoun = sum(1 for _ in re.finditer(r'\b%s\b' % re.escape("NN"), tagged_sent_str))
         countActionVerb = sum(1 for _ in re.finditer(r'\b%s\b' % re.escape("VB"), tagged_sent_str))
-    
+
         processed="Your CV has " + str(countFirstPerson) + " instances of first-person usage."
 
         nounverb = "There were " + str(countNoun) + " nouns in your CV. It contains "+ str(countActionVerb) + " action verbs."
@@ -176,7 +182,7 @@ def word_filter(dictObject):
     new_counts = dict()
     for(key, value) in dictObject.items():
         if value >= 5: new_counts[key] = value
- 
+
     return new_counts
 
 
@@ -253,4 +259,3 @@ def sw():
 
 if __name__ == '__main__':
     app.run()
-
