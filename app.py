@@ -33,7 +33,7 @@ from datetime import datetime
 #Regular Expressionn
 import re
 
-#PyMuPDFf
+#PyMuPDF
 import fitz
 
 
