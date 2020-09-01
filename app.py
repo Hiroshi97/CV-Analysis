@@ -55,6 +55,9 @@ nltk.download('punkt')
 
 # itemgetter
 
+# itemgetter
+from operator import itemgetter
+
 app = Flask(__name__)
 #sslify = SSLify(app)
 
@@ -65,7 +68,6 @@ cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 list1_score = ["2", "1", "3", "4", "4", "2", "3", "4"]
 list2_score = [True, True, True, True, True, True, True, True]
 scored_list = ["", ""]
-
 
 @app.route('/')
 def index():
@@ -95,7 +97,7 @@ def process():
         if int(len(f.read())/1024) > 20000:
             list2_score[2] = True
         else:
-            list2_score[2] = False
+            list2_score[2] = False 
 
         #Word count metrics
         word_count_num = len(text.split())
@@ -105,7 +107,7 @@ def process():
         if word_count_num > 2000:
             list2_score[7] = True
         else:
-            list2_score[7] = False
+            list2_score[7] = False 
 
         #Spellchecker
         spellcheck = spellchecker(text)
@@ -129,10 +131,12 @@ def process():
 
         #Four factors
         impact = [0, filename, filesize, word_count, fps[0], fps[1]]
+
         brevity = [0, spellcheck[0], bpCounter[2],
                    word_count_result, bpQuantify]
         style = [essential_section[0], essential_section[1],
                  essential_section[2], essential_section[3], date]
+
         soft_skills = [0, "a", "b", "c", "d", "e"]
         length = [len(impact), len(brevity), len(style), len(soft_skills)]
 
@@ -171,7 +175,7 @@ def spellchecker(text):
     else:
         output = "You may have misspelled the following words: " + \
             '\n' + ', '.join(cleanList)
-
+        
     global list2_score
     #scoring system
     if cleanList:
@@ -193,6 +197,8 @@ def bulletPointCounter(text):
 
     processed = "Your CV has " + \
         str(bulletPointCount) + " total bullet points."
+
+    processed = "Your CV has " + str(bulletPointCount) + " total bullet points."
 
     global list2_score
     #scoring system
@@ -260,6 +266,7 @@ def firstPersonSentiment(text):
     if countFirstPerson > 5:
         list2_score[0] = True
     else:
+
         list2_score[0] = False
 
     if countActionVerb > 5 and countNoun > 5:
@@ -304,13 +311,14 @@ def datefindersorter(text):
     dates12 = re.findall(regex12, text)
     #dates13 = re.findall(regex13, text)
     dates14 = re.findall(regex14, text)
-
+    
     if dates1:
 
         def split_list(x):
             return [dates5[i:i+x] for i in range(0, len(dates5), x)]
 
         splitted_list = split_list(2)
+
         num_list = list(map(lambda sub: int(
             ''.join([ele for ele in sub if ele.isnumeric()])), splitted_list[0]))
         second_num_list = list(map(lambda sub: int(
@@ -413,15 +421,6 @@ def datefindersorter(text):
             return monthresult
         elif (num_list[1] == second_num_list[0]) & (flag == 1):
             return result
-        else:
-            return badresult
-
-    if dates4:
-
-        def split_list(x):
-            return [dates4[i:i+x] for i in range(0, len(dates4), x)]
-
-        splitted_list = split_list(2)
         num_list = list(map(lambda sub: int(
             ''.join([ele for ele in sub if ele.isnumeric()])), splitted_list[0]))
         second_num_list = list(map(lambda sub: int(
@@ -454,7 +453,6 @@ def datefindersorter(text):
             return badresult
 
     if dates5:
-
         def split_list(x):
             return [dates5[i:i+x] for i in range(0, len(dates5), x)]
 
@@ -565,7 +563,6 @@ def datefindersorter(text):
             return badresult
 
     if dates8:
-
         def split_list(x):
             return [dates8[i:i+x] for i in range(0, len(dates8), x)]
 
@@ -798,7 +795,6 @@ def datefindersorter(text):
         else:
             return badresult
 
-
 def word_metric(word_count):
     if 450 <= word_count <= 650:
         metric_result = "Appropriate word count"
@@ -861,6 +857,20 @@ def word_filter(dictObject):
 
     return new_counts
 
+def word_match(key,list,li,score,output):
+    for x in list:
+        if fuzz.token_sort_ratio(key.lower(),x.lower()) > 80:
+            li = False          
+            print(output + " achieved!!!")
+            print(fuzz.token_sort_ratio(key.lower(),x.lower()))
+            print(key)
+            score += 20
+            print("score: ", score)
+            result = output + ": included"
+            break
+        else:
+            result = output + ": not included"
+    return li,score,result    
 
 def word_match(key, list, li, score, output):
     for x in list:
@@ -1002,11 +1012,11 @@ def word_matching_Softskill(dictObject):
 
     global scored_list
     scored_list[1] = section_Scored([4, 4, 4], [li1, li2, li3])*100
+
     result[0] = "Total score: " + str(scored_list[1])
     return result
 
 #calculate the total score of each section, it can calculate more than 1 section if needed
-
 
 def section_Scored(list1, list2):
     total = scored = 0
@@ -1018,10 +1028,8 @@ def section_Scored(list1, list2):
 
 #calculate the final overall scored in percentage (+ 4 sections and devided by 4)
 
-
 def final_overall_scored():
     return (section_Scored(list1_score, list2_score) + scored_list[0] + scored_list[1])/4*100
-
 
 def highlightText(textArr, f, color):
     f.seek(0)
