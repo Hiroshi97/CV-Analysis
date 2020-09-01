@@ -21,7 +21,7 @@ from matplotlib.figure import Figure
 import base64
 
 #Grammar & Spelling Lib
-import pylanguagetool
+#import pylanguagetool
 import nltk
 
 #Regular Expressionn
@@ -32,7 +32,6 @@ import fitz
 
 #date finder sorter
 from datetime import datetime
-
 
 from spellchecker import SpellChecker
 
@@ -61,6 +60,11 @@ app = Flask(__name__)
 #CORS
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
+#global variable for scoring system
+list1_score = ["2", "1", "3", "4", "4", "2", "3", "4"]
+list2_score = [True, True, True, True, True, True, True, True]
+scored_list = ["", ""]
+
 @app.route('/')
 def index():
     return render_template("home.html")
@@ -79,10 +83,23 @@ def process():
         filename = "File name: " + f.filename
         filesize = "File size: " + str(int(len(f.read())/1024)) + "kb"
         text = extract_text_from_pdf(f)
+        
+        global list2_score
+        #scoring system
+        if int(len(f.read())/1024) > 20000:
+            list2_score[2] = True
+        else:
+            list2_score[2] = False 
 
         #Word count metrics
         word_count_num = len(text.split())
         word_count_result = word_metric(word_count_num)
+
+        #scoring system
+        if word_count_num > 2000:
+            list2_score[7] = True
+        else:
+            list2_score[7] = False 
 
         #Spellchecker
         spellcheck = spellchecker(text)
@@ -133,6 +150,7 @@ def spellchecker(text):
     clonedList = clonedList.split()
     misspelled = sc.unknown(clonedList)
 
+
     for m in misspelled:
         if(re.search(emailRegex,m)):
             continue
@@ -146,8 +164,14 @@ def spellchecker(text):
     else:
         output = "You may have misspelled the following words: " + '\n' + ', '.join(cleanList)   
     
+    global list2_score
+    #scoring system
+    if cleanList:
+        list2_score[6] = False
+    else:
+        list2_score[6] = True 
 
-    return [output, cleanList]
+    return output
 
 # Count bullet points
 def bulletPointCounter(text):
@@ -157,6 +181,14 @@ def bulletPointCounter(text):
     bulletPointCount = len(bulletPointList)
 
     processed = "Your CV has " + str(bulletPointCount) + " total bullet points."
+
+    global list2_score
+    #scoring system
+    if bulletPointCount >= 0:
+        list2_score[5] = False
+    else:
+        list2_score[5] = True
+
     return [bulletPointList, bulletPointCount, processed]
 
 # Quantify bullet points
@@ -202,6 +234,18 @@ def firstPersonSentiment(text):
     processed="Your CV has " + str(countFirstPerson) + " instances of first-person usage. A good CV should have no instances, as it seems unproffesional."
 
     nounverb = "There were " + str(countNoun) + " nouns in your CV. It contains "+ str(countActionVerb) + " action verbs. Action verbs make you stand out as a candidate!"
+
+    global list2_score
+    #scoring system
+    if countFirstPerson > 5:
+        list2_score[0] = True
+    else:
+        list2_score[0] = False 
+    
+    if countActionVerb > 5 and countNoun > 5:
+        list2_score[1] = True
+    else:
+        list2_score[1] = False 
 
     return [processed, nounverb]
 
@@ -852,6 +896,21 @@ def word_filter(dictObject):
  
     return new_counts
 
+def word_match(key,list,li,score,output):
+    for x in list:
+        if fuzz.token_sort_ratio(key.lower(),x.lower()) > 80:
+            li = False          
+            print(output + " achieved!!!")
+            print(fuzz.token_sort_ratio(key.lower(),x.lower()))
+            print(key)
+            score += 20
+            print("score: ", score)
+            result = output + ": included"
+            break
+        else:
+            result = output + ": not included"
+    return li,score,result    
+
 
 # word_matching is used for essential part
 # it will find the word that match the lists and return related result
@@ -859,7 +918,7 @@ def word_matching(dictObject):
     # dictObject variable must come from word_frequency result
     list1 = ["career", "objective", "summary", "profile"]
     list2 = ["elementary","education", "qualification", "training", "academic", "GPA", "Bachelor", "degree", "master", "PhD", "high school", "diploma", "accociate degree", "TAFE", "certificates", "archiement"]
-    list3 = ["part-time","employment", "Experience", "work", "placement", "internship", "professional", "volunteer", "practicums", "job"]
+    list3 = ["part-time","employment", "Experience", "work", "placement", "internship", "profesional", "volunteer", "practicums", "job"]
     list4 = ["skill", "attribute", "strength", "key skills", "know", "knew", "programming", "java", "language", "c#", "flask", "python", "AWS", "d3"]
     list5 = ["referee", "reference"]
     li1 = True
@@ -869,104 +928,37 @@ def word_matching(dictObject):
     li5 = True
     score = 0
     result = ["", "", "", "", "", ""]
-    highlight = []
+
     for(key, value) in dictObject.items():
         #print(key)
         if li1:
-            for x in list1:
-                if fuzz.token_sort_ratio(key.lower(),x.lower()) > 80:
-                    li1 = False
-                    print("career objective achieved!!!")
-                    print(fuzz.token_sort_ratio(key.lower(),x.lower()))
-                    print(key)
-                    score += 20
-                    print("score: ", score)
-                    highlight.append(key)
-                    result[1] = "Career objective: included"
-                    break
-                else:
-                    result[1] = "Career objective: not included"
+            li1,score,result[1] = word_match(key,list1,li1,score,"Career objective")
 
         if li2:
-            for x in list2:
-                if fuzz.token_sort_ratio(key.lower(),x.lower()) > 80:
-                    li2 = False
-                    print("education achieved!!!")
-                    print(fuzz.token_sort_ratio(key.lower(),x.lower()))
-                    print(key)
-                    score += 20
-                    print("score: ", score)
-                    highlight.append(key)
-                    result[2] = "Education & Qualification: included"
-                    break
-                else:
-                    result[2] = "Education & Qualification: not included"
-
+            li2,score,result[2] = word_match(key,list2,li2,score,"education")
+                
         if li3:
-            for x in list3:
-                if fuzz.token_sort_ratio(key.lower(),x.lower()) > 80:
-                    li3 = False
-                    print("employment achieved!!!")
-                    print(fuzz.token_sort_ratio(key.lower(),x.lower()))
-                    print(key)
-                    score += 20
-                    print("score: ", score)
-                    highlight.append(key)
-                    result[3] = "Employment History: included"
-                    break
-                else:
-                    result[3] = "Employment History: not included"
-
+            li3,score,result[3] = word_match(key,list3,li3,score,"Employment History")
+            
         if li4:
-            for x in list4:
-                if fuzz.token_sort_ratio(key.lower(),x.lower()) > 80:
-                    li4 = False
-                    print("skill achieved!!!")
-                    print(fuzz.token_sort_ratio(key.lower(),x.lower()))
-                    print(key)
-                    score += 20
-                    print("score: ", score)
-                    highlight.append(key)
-                    result[4] = "Skills summary: included"
-                    break
-                else:
-                    result[4] = "Skills summary: not included"
+            li4,score,result[4] = word_match(key,list4,li4,score,"Skill")
 
         if li5:
-            for x in list5:
-                if fuzz.token_sort_ratio(key.lower(),x.lower()) > 80:
-                    li5 = False
-                    print("reference achieved!!!")
-                    print(fuzz.token_sort_ratio(key.lower(),x.lower()))
-                    print(key)
-                    score += 20
-                    print("score: ", score)
-                    highlight.append(key)
-                    result[5] = "References: included"
-                    break
-                else:
-                    result[5] = "References: not included"
+            li5,score,result[5] = word_match(key,list5,li5,score,"References")
 
-        #result[0] = "Total score: " + str(score)
-        result[0] = score
-        result.append(highlight)
-    return result
+#calculate the total score of each section, it can calculate more than 1 section if needed
+def section_Scored(list1, list2):
+    total = scored = 0
+    for index, score in enumerate(list1):
+        total += score
+        if not list2[index]:
+            scored += score
+    return (scored/total)
 
-def highlightText(textArr, f, color):
-    f.seek(0)
-    doc = fitz.Document(stream=bytearray(f.read()), filename = 'cv.pdf')
-    if (len(textArr) > 0):
-        for p in doc.pages():
-            for text in textArr:
-                text_instances = p.searchFor(text)
-                for inst in text_instances:
-                    highlight = p.addHighlightAnnot(inst)
-                    highlight.setColors({"stroke":color, "fill":(1, 1, 1)})
-                    highlight.update()
+#calculate the final overall scored in percentage (+ 4 sections and devided by 4)
+def final_overall_scored():
+    return (section_Scored(list1_score,list2_score) + scored_list[0] + scored_list[1])/4*100
 
-    memoryStream = doc.write()
-    doc.close()
-    return base64.b64encode(memoryStream).decode('ascii')
 
 @app.route('/sw.js')
 def sw():
