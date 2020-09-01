@@ -61,6 +61,11 @@ app = Flask(__name__)
 #CORS
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
+#global variable for scoring system
+list1_score = ["2", "1", "3", "4", "4", "2", "3", "4"]
+list2_score = [True, True, True, True, True, True, True, True]
+scored_list = ["", ""]
+
 @app.route('/')
 def index():
     return render_template("home.html")
@@ -80,9 +85,22 @@ def process():
         filesize = "File size: " + str(int(len(f.read())/1024)) + "kb"
         text = extract_text_from_pdf(f)
 
+        global list2_score
+        #scoring system
+        if int(len(f.read())/1024) > 20000:
+            list2_score[2] = True
+        else:
+            list2_score[2] = False 
+
         #Word count metrics
         word_count_num = len(text.split())
         word_count_result = word_metric(word_count_num)
+
+        #scoring system
+        if word_count_num > 2000:
+            list2_score[7] = True
+        else:
+            list2_score[7] = False 
 
         #Spellchecker
         spellcheck = spellchecker(text)
@@ -146,6 +164,12 @@ def spellchecker(text):
     else:
         output = "You may have misspelled the following words: " + '\n' + ', '.join(cleanList)   
     
+    global list2_score
+    #scoring system
+    if cleanList:
+        list2_score[6] = False
+    else:
+        list2_score[6] = True 
 
     return [output, cleanList]
 
@@ -157,6 +181,14 @@ def bulletPointCounter(text):
     bulletPointCount = len(bulletPointList)
 
     processed = "Your CV has " + str(bulletPointCount) + " total bullet points."
+    
+    global list2_score
+    #scoring system
+    if bulletPointCount >= 0:
+        list2_score[5] = False
+    else:
+        list2_score[5] = True
+
     return [bulletPointList, bulletPointCount, processed]
 
 # Quantify bullet points
@@ -202,6 +234,18 @@ def firstPersonSentiment(text):
     processed="Your CV has " + str(countFirstPerson) + " instances of first-person usage. A good CV should have no instances, as it seems unproffesional."
 
     nounverb = "There were " + str(countNoun) + " nouns in your CV. It contains "+ str(countActionVerb) + " action verbs. Action verbs make you stand out as a candidate!"
+
+    global list2_score
+    #scoring system
+    if countFirstPerson > 5:
+        list2_score[0] = True
+    else:
+        list2_score[0] = False 
+    
+    if countActionVerb > 5 and countNoun > 5:
+        list2_score[1] = True
+    else:
+        list2_score[1] = False 
 
     return [processed, nounverb]
 
@@ -852,6 +896,20 @@ def word_filter(dictObject):
  
     return new_counts
 
+def word_match(key,list,li,score,output):
+    for x in list:
+        if fuzz.token_sort_ratio(key.lower(),x.lower()) > 80:
+            li = False          
+            print(output + " achieved!!!")
+            print(fuzz.token_sort_ratio(key.lower(),x.lower()))
+            print(key)
+            score += 20
+            print("score: ", score)
+            result = output + ": included"
+            break
+        else:
+            result = output + ": not included"
+    return li,score,result    
 
 # word_matching is used for essential part
 # it will find the word that match the lists and return related result
@@ -870,87 +928,108 @@ def word_matching(dictObject):
     score = 0
     result = ["", "", "", "", "", ""]
     highlight = []
+    
     for(key, value) in dictObject.items():
         #print(key)
         if li1:
-            for x in list1:
-                if fuzz.token_sort_ratio(key.lower(),x.lower()) > 80:
-                    li1 = False
-                    print("career objective achieved!!!")
-                    print(fuzz.token_sort_ratio(key.lower(),x.lower()))
-                    print(key)
-                    score += 20
-                    print("score: ", score)
-                    highlight.append(key)
-                    result[1] = "Career objective: included"
-                    break
-                else:
-                    result[1] = "Career objective: not included"
+            li1,score,result[1] = word_match(key,list1,li1,score,"Career objective")
+            if li1 is False:
+                highlight.append(key)
 
         if li2:
-            for x in list2:
-                if fuzz.token_sort_ratio(key.lower(),x.lower()) > 80:
-                    li2 = False
-                    print("education achieved!!!")
-                    print(fuzz.token_sort_ratio(key.lower(),x.lower()))
-                    print(key)
-                    score += 20
-                    print("score: ", score)
-                    highlight.append(key)
-                    result[2] = "Education & Qualification: included"
-                    break
-                else:
-                    result[2] = "Education & Qualification: not included"
-
+            li2,score,result[2] = word_match(key,list2,li2,score,"education")
+            if li2 is False:
+                highlight.append(key)
+                
         if li3:
-            for x in list3:
-                if fuzz.token_sort_ratio(key.lower(),x.lower()) > 80:
-                    li3 = False
-                    print("employment achieved!!!")
-                    print(fuzz.token_sort_ratio(key.lower(),x.lower()))
-                    print(key)
-                    score += 20
-                    print("score: ", score)
-                    highlight.append(key)
-                    result[3] = "Employment History: included"
-                    break
-                else:
-                    result[3] = "Employment History: not included"
-
+            li3,score,result[3] = word_match(key,list3,li3,score,"Employment History")
+            if li3 is False:
+                highlight.append(key)
+            
         if li4:
-            for x in list4:
-                if fuzz.token_sort_ratio(key.lower(),x.lower()) > 80:
-                    li4 = False
-                    print("skill achieved!!!")
-                    print(fuzz.token_sort_ratio(key.lower(),x.lower()))
-                    print(key)
-                    score += 20
-                    print("score: ", score)
-                    highlight.append(key)
-                    result[4] = "Skills summary: included"
-                    break
-                else:
-                    result[4] = "Skills summary: not included"
+            li4,score,result[4] = word_match(key,list4,li4,score,"Skill")
+            if li4 is False:
+                highlight.append(key)
 
         if li5:
-            for x in list5:
-                if fuzz.token_sort_ratio(key.lower(),x.lower()) > 80:
-                    li5 = False
-                    print("reference achieved!!!")
-                    print(fuzz.token_sort_ratio(key.lower(),x.lower()))
-                    print(key)
-                    score += 20
-                    print("score: ", score)
-                    highlight.append(key)
-                    result[5] = "References: included"
-                    break
-                else:
-                    result[5] = "References: not included"
+            li5,score,result[5] = word_match(key,list5,li5,score,"References")
+            if li5 is False:
+                highlight.append(key)
 
-        #result[0] = "Total score: " + str(score)
-        result[0] = score
-        result.append(highlight)
+    global scored_list
+    scored_list[0] = section_Scored([4,4,4,4,4], [li1, li2, li3, li4, li5])*100
+    result[0] = (scored_list[0])
+    result.append(highlight)
     return result
+
+# word_match_Softskill is used for softskill part
+# the function will only approved the resume have the specific skill when more than half of word from the list is found in the resume
+def word_match_Softskill(key,list,li,score,output,counter):
+    final_output = "" 
+    for x in list:
+        if fuzz.token_sort_ratio(key.lower(),x.lower()) > 80:
+            counter= counter + 1                  
+            print(fuzz.token_sort_ratio(key.lower(),x.lower()))
+            print(key)
+            break
+            
+        if counter >= (len(list)/3):
+            li = False    
+            score += 1
+            print("score: ", score)
+            final_output = output[0]
+            break
+        else:
+            final_output = output[1]
+
+    return li,score,final_output,counter 
+
+def word_matching_Softskill(dictObject):
+    # dictObject variable must come from word_frequency result
+    listCommunication = ["communicated","described", "explained", "conveyed", "reported", "presented", "expressed", "briefing", "briefed", "discussion"]
+    listLeadership=["lead","leadership","guided","guide","direct","directed","managed","management","orchestrated","initiative","supervised","supervisor","authority","controlled","administrative","administration","capacity"]
+    listTeamwork = ["collaborated","collaboration","together","team","joint","effort","synergy","cooperation","cooperated","assisted","partnership","team"]
+    output_Communication = ["Your CV displays an adequate level of communication skills.","Your CV could display more evidence of communication skills. Words such as 'conveyed', 'briefed' and 'discussed' are useful."]
+    output_Leadership = ["Your CV proves good leadership skills.","Your CV may appear more attractive to employers if you describe evidence of leadership. Some useful words to consider are 'directed', 'managed', 'supervised' and 'initiative'."]
+    output_Teamwork = ["Your CV shows you are a team player.","Your CV could stand to display more team-oriented language. Words such as 'collaborated, 'synergy' and 'cooperation' are good."]
+    li1 = True
+    li2 = True
+    li3 = True
+    counter1 = 0
+    counter2 = 0
+    counter3 = 0
+    score = 0
+    result = ["", "", "", ""]
+
+    for(key, value) in dictObject.items():
+        #print(key)
+        if li1:
+            li1,score,result[1],counter1 = word_match_Softskill(key,listCommunication,li1,score,output_Communication,counter1)
+        
+        if li2:
+            li2,score,result[2],counter2 = word_match_Softskill(key,listLeadership,li2,score,output_Leadership,counter2)
+        
+        if li3:
+            li3,score,result[3],counter3 = word_match_Softskill(key,listTeamwork,li3,score,output_Teamwork,counter3)
+    
+    global scored_list
+    scored_list[1] = section_Scored([4,4,4], [li1, li2, li3])*100
+    result[0] = "Total score: " + str(scored_list[1])
+    return result
+
+#calculate the total score of each section, it can calculate more than 1 section if needed
+def section_Scored(list1, list2):
+    total = scored = 0
+    for index, score in enumerate(list1):
+        total += score
+        if not list2[index]:
+            scored += score
+    return (scored/total)
+
+#calculate the final overall scored in percentage (+ 4 sections and devided by 4)
+def final_overall_scored():
+    return (section_Scored(list1_score,list2_score) + scored_list[0] + scored_list[1])/4*100
+
 
 def highlightText(textArr, f, color):
     f.seek(0)
