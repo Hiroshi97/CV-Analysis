@@ -122,6 +122,12 @@ def process():
         word_count = "Word Count: " + str(word_count_num)
 
         #Four factors
+        impact = [filename, filesize, word_count, fps[0], fps[1]]
+        brevity = [spellcheck, bpCounter, word_count_result, word_count_num]
+        style = essential_section
+        soft_skills = word_matching_Softskill(word_frequency(text))
+
+        return render_template("result.html", impact=impact, brevity=brevity, style=style, soft_skills=soft_skills, pdfstring=pdfstring)
         impact = [0, filename, filesize, word_count, fps[0], fps[1]]
         brevity = [0, spellcheck[0], bpCounter[2], word_count_result, bpQuantify]
         style = [essential_section[0],essential_section[1],essential_section[2],essential_section[3],date]
@@ -164,6 +170,13 @@ def spellchecker(text):
     else:
         output = "You may have misspelled the following words: " + '\n' + ', '.join(cleanList)   
     
+    global list2_score
+    #scoring system
+    if cleanList:
+        list2_score[6] = False
+    else:
+        list2_score[6] = True 
+
     global list2_score
     #scoring system
     if cleanList:
@@ -234,6 +247,18 @@ def firstPersonSentiment(text):
     processed="Your CV has " + str(countFirstPerson) + " instances of first-person usage. A good CV should have no instances, as it seems unproffesional."
 
     nounverb = "There were " + str(countNoun) + " nouns in your CV. It contains "+ str(countActionVerb) + " action verbs. Action verbs make you stand out as a candidate!"
+
+    global list2_score
+    #scoring system
+    if countFirstPerson > 5:
+        list2_score[0] = True
+    else:
+        list2_score[0] = False 
+    
+    if countActionVerb > 5 and countNoun > 5:
+        list2_score[1] = True
+    else:
+        list2_score[1] = False 
 
     global list2_score
     #scoring system
@@ -945,6 +970,67 @@ def word_matching(dictObject):
 
         if li5:
             li5,score,result[5] = word_match(key,list5,li5,score,"References")
+
+    global scored_list
+    scored_list[0] = section_Scored([4,4,4,4,4], [li1, li2, li3, li4, li5])*100
+    result[0] = "Total score: " + str(scored_list[0])
+    return result
+
+
+# word_match_Softskill is used for softskill part
+# the function will only approved the resume have the specific skill when more than half of word from the list is found in the resume
+def word_match_Softskill(key,list,li,score,output,counter):
+    final_output = "" 
+    for x in list:
+        if fuzz.token_sort_ratio(key.lower(),x.lower()) > 80:
+            counter= counter + 1                  
+            print(fuzz.token_sort_ratio(key.lower(),x.lower()))
+            print(key)
+            break
+            
+        if counter >= (len(list)/3):
+            li = False    
+            score += 1
+            print("score: ", score)
+            final_output = output[0]
+            break
+        else:
+            final_output = output[1]
+
+    return li,score,final_output,counter 
+
+def word_matching_Softskill(dictObject):
+    # dictObject variable must come from word_frequency result
+    listCommunication = ["communicated","described", "explained", "conveyed", "reported", "presented", "expressed", "briefing", "briefed", "discussion"]
+    listLeadership=["lead","leadership","guided","guide","direct","directed","managed","management","orchestrated","initiative","supervised","supervisor","authority","controlled","administrative","administration","capacity"]
+    listTeamwork = ["collaborated","collaboration","together","team","joint","effort","synergy","cooperation","cooperated","assisted","partnership","team"]
+    output_Communication = ["Your CV displays an adequate level of communication skills.","Your CV could display more evidence of communication skills. Words such as 'conveyed', 'briefed' and 'discussed' are useful."]
+    output_Leadership = ["Your CV proves good leadership skills.","Your CV may appear more attractive to employers if you describe evidence of leadership. Some useful words to consider are 'directed', 'managed', 'supervised' and 'initiative'."]
+    output_Teamwork = ["Your CV shows you are a team player.","Your CV could stand to display more team-oriented language. Words such as 'collaborated, 'synergy' and 'cooperation' are good."]
+    li1 = True
+    li2 = True
+    li3 = True
+    counter1 = 0
+    counter2 = 0
+    counter3 = 0
+    score = 0
+    result = ["", "", "", ""]
+
+    for(key, value) in dictObject.items():
+        #print(key)
+        if li1:
+            li1,score,result[1],counter1 = word_match_Softskill(key,listCommunication,li1,score,output_Communication,counter1)
+        
+        if li2:
+            li2,score,result[2],counter2 = word_match_Softskill(key,listLeadership,li2,score,output_Leadership,counter2)
+        
+        if li3:
+            li3,score,result[3],counter3 = word_match_Softskill(key,listTeamwork,li3,score,output_Teamwork,counter3)
+    
+    global scored_list
+    scored_list[1] = section_Scored([4,4,4], [li1, li2, li3])*100
+    result[0] = "Total score: " + str(scored_list[1])
+    return result
 
 #calculate the total score of each section, it can calculate more than 1 section if needed
 def section_Scored(list1, list2):
