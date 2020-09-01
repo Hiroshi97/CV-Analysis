@@ -51,6 +51,11 @@ app = Flask(__name__)
 #CORS
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
+#global variable for scoring system
+list1_score = ["2", "1", "3", "4", "4", "2", "3", "4"]
+list2_score = [True, True, True, True, True, True, True, True]
+scored_list = ["", ""]
+
 @app.route('/')
 def index():
     return render_template("home.html")
@@ -69,10 +74,23 @@ def process():
         filename = "File name: " + f.filename
         filesize = "File size: " + str(int(len(f.read())/1024)) + "kb"
         text = extract_text_from_pdf(f)
+        
+        global list2_score
+        #scoring system
+        if int(len(f.read())/1024) > 20000:
+            list2_score[2] = True
+        else:
+            list2_score[2] = False 
 
         #Word count metrics
         word_count_num = len(text.split())
         word_count_result = word_metric(word_count_num)
+
+        #scoring system
+        if word_count_num > 2000:
+            list2_score[7] = True
+        else:
+            list2_score[7] = False 
 
         #Spellchecker
         spellcheck = spellchecker(text)
@@ -121,6 +139,13 @@ def spellchecker(text):
 
     output = "You may have misspelled the following words: " + '\n' + ', '.join(cleanList)
 
+    global list2_score
+    #scoring system
+    if cleanList:
+        list2_score[6] = False
+    else:
+        list2_score[6] = True 
+
     return output
 
 # Count bullet points
@@ -131,6 +156,14 @@ def bulletPointCounter(text):
     bulletPointCount = len(bulletPointList)
 
     processed = "Your CV has " + str(bulletPointCount) + " total bullet points."
+
+    global list2_score
+    #scoring system
+    if bulletPointCount >= 0:
+        list2_score[5] = False
+    else:
+        list2_score[5] = True
+
     return processed
 
 
@@ -151,6 +184,18 @@ def firstPersonSentiment(text):
     processed="Your CV has " + str(countFirstPerson) + " instances of first-person usage."
 
     nounverb = "There were " + str(countNoun) + " nouns in your CV. It contains "+ str(countActionVerb) + " action verbs."
+
+    global list2_score
+    #scoring system
+    if countFirstPerson > 5:
+        list2_score[0] = True
+    else:
+        list2_score[0] = False 
+    
+    if countActionVerb > 5 and countNoun > 5:
+        list2_score[1] = True
+    else:
+        list2_score[1] = False 
 
     return [processed, nounverb]
 
@@ -259,8 +304,9 @@ def word_matching(dictObject):
         if li5:
             li5,score,result[5] = word_match(key,list5,li5,score,"References")
 
-        #result[0] = "Total score: " + str(score)
-        result[0] = score
+    global scored_list
+    scored_list[0] = section_Scored([4,4,4,4,4], [li1, li2, li3, li4, li5])*100
+    result[0] = "Total score: " + str(scored_list[0])
     return result
 
 # word_match_Softskill is used for softskill part
@@ -276,7 +322,7 @@ def word_match_Softskill(key,list,li,score,output,counter):
             
         if counter >= (len(list)/3):
             li = False    
-            score += 20
+            score += 1
             print("score: ", score)
             final_output = output[0]
             break
@@ -312,10 +358,24 @@ def word_matching_Softskill(dictObject):
         
         if li3:
             li3,score,result[3],counter3 = word_match_Softskill(key,listTeamwork,li3,score,output_Teamwork,counter3)
-
-        #result[0] = "Total score: " + str(score)
-        result[0] = score
+    
+    global scored_list
+    scored_list[1] = section_Scored([4,4,4], [li1, li2, li3])*100
+    result[0] = "Total score: " + str(scored_list[1])
     return result
+
+#calculate the total score of each section, it can calculate more than 1 section if needed
+def section_Scored(list1, list2):
+    total = scored = 0
+    for index, score in enumerate(list1):
+        total += score
+        if not list2[index]:
+            scored += score
+    return (scored/total)
+
+#calculate the final overall scored in percentage (+ 4 sections and devided by 4)
+def final_overall_scored():
+    return (section_Scored(list1_score,list2_score) + scored_list[0] + scored_list[1])/4*100
 
 
 @app.route('/sw.js')
