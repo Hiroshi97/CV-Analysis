@@ -222,8 +222,10 @@ def datefindersorter(text):
     regex10 = r'(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\s\d{2}'
     regex11 = r'[\d]{1,2}/[\d]{1,2}/[\d]{4}' #dd/mm/yyyy or d/m/yyyy
     regex12 = r'[\d]{1,2}-[\d]{1,2}-[\d]{2}' #dd-mm-yyyy or d-m-yyyy
-    #regex13 = r'[\d]{1,2}'
+    #regex13 = r'\s[\d]{2}\s'
     regex14 = r'[\d]{4}'
+
+
     
    
     
@@ -241,6 +243,7 @@ def datefindersorter(text):
     dates12 = re.findall(regex12, text)
     #dates13 = re.findall(regex13, text)
     dates14 = re.findall(regex14, text)
+    
 
 
     if dates1:
@@ -749,6 +752,8 @@ def datefindersorter(text):
         else:
             return badresult
         
+      
+     
     
 
     if dates14:
@@ -786,11 +791,11 @@ def datefindersorter(text):
         if (num_list[1] > second_num_list[0]): 
             return result 
         elif (num_list[1] == second_num_list[0]) &  (flag == 0):
-            return  splitted_list#monthresult
+            return  monthresult
         elif (num_list[1] == second_num_list[0]) &  (flag == 1):
-            return splitted_list#result 
+            return result 
         else:
-            return splitted_list#badresult
+            return badresult
 
 def word_metric(word_count):
     if  450 <= word_count <= 650:
