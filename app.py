@@ -169,13 +169,6 @@ def spellchecker(text):
         output = "Your resume is free of spelling errors! Congratulations!"
     else:
         output = "You may have misspelled the following words: " + '\n' + ', '.join(cleanList)   
-    
-    global list2_score
-    #scoring system
-    if cleanList:
-        list2_score[6] = False
-    else:
-        list2_score[6] = True 
 
     global list2_score
     #scoring system
@@ -248,24 +241,6 @@ def firstPersonSentiment(text):
 
     nounverb = "There were " + str(countNoun) + " nouns in your CV. It contains "+ str(countActionVerb) + " action verbs. Action verbs make you stand out as a candidate!"
 
-    global list2_score
-    #scoring system
-    if countFirstPerson > 5:
-        list2_score[0] = True
-    else:
-        list2_score[0] = False 
-    
-    if countActionVerb > 5 and countNoun > 5:
-        list2_score[1] = True
-    else:
-        list2_score[1] = False 
-
-    global list2_score
-    #scoring system
-    if countFirstPerson > 5:
-        list2_score[0] = True
-    else:
-        list2_score[0] = False 
     
     if countActionVerb > 5 and countNoun > 5:
         list2_score[1] = True
