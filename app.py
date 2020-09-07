@@ -123,12 +123,12 @@ def process():
         word_count = "Word Count: " + str(word_count_num)
 
         #Four factors
-        impact = [0, filename, filesize, word_count, fps[0], fps[1]]
-        brevity = [0, spellcheck[0], bpCounter[2], word_count_result, bpQuantify]
+        impact = [62, filename, filesize, word_count, fps[0], fps[1]]
+        brevity = [75, spellcheck[0], bpCounter[2], word_count_result, bpQuantify]
         style = [essential_section[0],essential_section[1],essential_section[2],essential_section[3],date]
         soft_skills = word_matching_Softskill(word_frequency(text))
         length = [len(impact), len(brevity), len(style), len(soft_skills)]
-        final_overall_scored()
+        print("final overall scored:",final_overall_scored(),"%")
         
         #Highlighted files
         pdfstrings = []
@@ -1015,7 +1015,9 @@ def word_matching_Softskill(dictObject):
     
     global scored_list
     scored_list[1] = section_Scored([4,4,4], [li1, li2, li3])*100
-    result[0] = str(scored_list[1])
+    result[0] = int(scored_list[1])
+    print("list score1:",list1_score)
+    print("list score2:",list2_score)
     return result
 
 #calculate the total score of each section, it can calculate more than 1 section if needed
@@ -1029,6 +1031,8 @@ def section_Scored(list1, list2):
 
 #calculate the final overall scored in percentage (+ 4 sections and devided by 4)
 def final_overall_scored():
+    print(section_Scored(list1_score,list2_score)*100, "%")
+    print(scored_list)
     return (section_Scored(list1_score,list2_score) + ((scored_list[0] + scored_list[1])/100))/3*100
 
 
