@@ -14,7 +14,9 @@ from BulletPointProcessor import quantifyBulletPoints, bulletPointCounter
 #First Personal Sentiment
 from FirstPersonalSentiment import firstPersonSentiment
 #Word matching
-from WordMatching import word_matching
+from WordMatching import word_matching, word_matching_Softskill
+#Scoring system
+from ScoringSystem import section_Scored_split, final_overall_scored
 
 # from matplotlib.figure import Figure
 
@@ -103,9 +105,12 @@ def process():
         style = [essential_section[0], essential_section[1],
                  essential_section[2], essential_section[3], datesorter.datefindersorter(text)]
 
-        soft_skills = [0, "a", "b", "c", "d", "e"]
+        soft_skills = word_matching_Softskill(word_frequency(text))
         length = [len(impact), len(brevity), len(style), len(soft_skills)]
-
+        section_Scored_split(ListScore.list1_score,ListScore.list2_score)
+        impact[0] = ListScore.scored_list[2]
+        brevity[0] = ListScore.scored_list[3]
+        final_overall_scored()
         #Highlighted files
         pdfstrings = []
         pdfstrings.append(pdfstring)  # Original file

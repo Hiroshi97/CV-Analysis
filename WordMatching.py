@@ -65,7 +65,8 @@ def word_matching(dictObject):
                 highlight.append(key)
 
         if li4:
-            li4, score, result[4] = word_match(key, list4, li4, score, "Skill")
+            li4, score, result[4] = word_match(
+                key, list4, li4, score, "Skill")
             if li4 is False:
                 highlight.append(key)
 
@@ -75,8 +76,7 @@ def word_matching(dictObject):
             if li5 is False:
                 highlight.append(key)
 
-    ListScore.scored_list[0] = section_Scored(
-        [4, 4, 4, 4, 4], [li1, li2, li3, li4, li5])*100
+    ListScore.scored_list[0] = float("{:.2f}".format(section_Scored([4, 4, 4, 4, 4], [li1, li2, li3, li4, li5])*100))
     result[0] = (ListScore.scored_list[0])
     result.append(highlight)
     return result
@@ -143,7 +143,10 @@ def word_matching_Softskill(dictObject):
             li3, score, result[3], counter3 = word_match_Softskill(
                 key, listTeamwork, li3, score, output_Teamwork, counter3)
 
-    ListScore.scored_list[1] = section_Scored([4, 4, 4], [li1, li2, li3])*100
+    ListScore.scored_list[1] = float("{:.2f}".format(section_Scored([4, 4, 4], [li1, li2, li3])*100))
 
-    result[0] = "Total score: " + str(scored_list[1])
+    result[0] = (ListScore.scored_list[1])
+    print("list score1:",ListScore.list1_score)
+    print("list score2:",ListScore.list2_score)
+    print("scored_list:",ListScore.scored_list)
     return result
