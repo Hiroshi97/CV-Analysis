@@ -7,7 +7,7 @@ import ListScore
 # Spellchecker
 def spellchecker(text):
     sc = SpellChecker()
-    sc.word_frequency.load_dictionary('static/test_dict.json')
+    sc.word_frequency.load_dictionary('static/spellchecker_dict.json')
     shortenedWords = []
 
     # Spellchecking
