@@ -52,6 +52,10 @@ def process():
         t = request.form['essential_skills']
         print(t)
 
+        #Dropdown menu selection
+        t = request.form['job_type']
+        print(t)
+
         #PDF Preview
         pdfstring = base64.b64encode(f.read())
         pdfstring = pdfstring.decode('ascii')

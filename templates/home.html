@@ -77,16 +77,26 @@
         <div class="card-body">
           <h2 class="title">Brief Job Requirements</h2>
           <label for="essential_skills">Essesntial Skills</label>
-          <input type="text" class="form-control" id="essential_skills" />
-    
+          <input type="text" class="form-control" id="essential_skills"/>
+
           <label for="soft_skills">Soft Skills</label>
           <input type="text" class="form-control" id="soft_skills" />
-    
+
           <label for="others">Others</label>
           <input type="text" class="form-control" id="others" />
+
+          <label for="job_type">Type of Industry</label>
+          <select class="form-control" name="job_type">
+            <option value="it_keywords.json">IT</option>
+            <option value="healthcare_keywords.json">Medical</option>
+            <option value="engineering_keywords.json">Engineering</option>
+            <option value="education_keywords.json">Education</option>
+            <option value="creative_keywords.json">Design</option>
+          </select>
         </div>
       </div>
     </div>
+
 
     <div class="upload">
       <div class="upload-files">
