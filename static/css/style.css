@@ -98,7 +98,7 @@ section {
   padding-top:40px;
   padding-left:40px;
   float: left;
-  width: 50%;
+  width: 25%;
   color: white;
   border: 2px dashed white;
   border-radius: 5%;
@@ -132,14 +132,51 @@ section {
 }
 
 #uploadForm {
-  padding-left: 60%;
+  padding-left: 30%;
   padding-top: 10px;
   width: 100%;
 }
 
+.input {
+  float: left;
+  width: 50%;
+  padding-right: 5%;
+  
+}
+/* ==========================================================================
+   #CARD
+   ========================================================================== */
+.card {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  background: #fff;
+}
+
+.card-4 {
+  background: #fff;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  -webkit-box-shadow: 0px 8px 20px 0px rgba(0, 0, 0, 0.15);
+  -moz-box-shadow: 0px 8px 20px 0px rgba(0, 0, 0, 0.15);
+  box-shadow: 0px 8px 20px 0px rgba(0, 0, 0, 0.15);
+}
+
+.card-4 .card-body {
+  padding: 57px 65px;
+  padding-bottom: 65px;
+}
+
+@media (max-width: 767px) {
+  .card-4 .card-body {
+    padding: 50px 40px;
+  }
+}
+
 .upload {
   position: relative;
-  width: 70%;
+  width: 45%;
   min-height: 445px;
   box-sizing: border-box;
   border-radius: 5px;
