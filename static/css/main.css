@@ -15738,7 +15738,7 @@ legend {
 
 .widget-content:hover .widget-content-right.widget-content-actions {
 	visibility: visible;
-	opacity: 1
+	opacity: 1;
 }
 
 .ps {
@@ -24614,4 +24614,15 @@ a.fc-more:hover {
 
 .app-pdf-previewer {
 	float: right;
+}
+
+.widget-chart:hover {
+	opacity: 0.7;
+	box-shadow: 5px 4px #CCCCCC;
+}
+
+.list-group-item:hover {
+	bottom: 5px;
+	box-shadow: 5px 4px #CCCCCC;
+	transition: box-shadow 0.3s ease-in-out;
 }
