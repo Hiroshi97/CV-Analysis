@@ -48,6 +48,10 @@ def process():
     if request.method == 'POST':
         f = request.files['cvfile']
 
+        # TODO: testing getting input
+        t = request.form['essential_skills']
+        print(t)
+
         #PDF Preview
         pdfstring = base64.b64encode(f.read())
         pdfstring = pdfstring.decode('ascii')
