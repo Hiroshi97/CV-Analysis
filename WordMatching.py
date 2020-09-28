@@ -4,7 +4,12 @@ from fuzzywuzzy import fuzz
 #Scoring system
 from ScoringSystem import section_Scored, final_overall_scored
 
+#Json file reader
+from JsonProcessor import jsonfile_reader, jsonfile_reader_Advance
+
 import ListScore
+import json
+import os
 
 def word_match(key,list,li,score,output):
     for x in list:
@@ -27,14 +32,12 @@ def word_match(key,list,li,score,output):
 
 def word_matching(dictObject):
     # dictObject variable must come from word_frequency result
-    list1 = ["career", "objective", "summary", "profile"]
-    list2 = ["elementary", "education", "qualification", "training", "academic", "GPA", "Bachelor", "degree",
-             "master", "PhD", "high school", "diploma", "accociate degree", "TAFE", "certificates", "archiement"]
-    list3 = ["part-time", "employment", "Experience", "work", "placement",
-             "internship", "professional", "volunteer", "practicums", "job"]
-    list4 = ["skill", "attribute", "strength", "key skills", "know", "knew",
-             "programming", "java", "language", "c#", "flask", "python", "AWS", "d3"]
-    list5 = ["referee", "reference"]
+    list1, list2, list3, list4, list5 = jsonfile_reader_Advance('word_matching_keywords.json')
+    print(list1)
+    print(list2)
+    print(list3)
+    print(list4)
+    print(list5)
     li1 = True
     li2 = True
     li3 = True
@@ -108,18 +111,6 @@ def word_match_Softskill(key, list, li, score, output, counter):
 
 def word_matching_Softskill(dictObject):
     # dictObject variable must come from word_frequency result
-    listCommunication = ["communicated", "described", "explained", "conveyed",
-                         "reported", "presented", "expressed", "briefing", "briefed", "discussion"]
-    listLeadership = ["lead", "leadership", "guided", "guide", "direct", "directed", "managed", "management", "orchestrated",
-                      "initiative", "supervised", "supervisor", "authority", "controlled", "administrative", "administration", "capacity"]
-    listTeamwork = ["collaborated", "collaboration", "together", "team", "joint",
-                    "effort", "synergy", "cooperation", "cooperated", "assisted", "partnership", "team"]
-    output_Communication = ["Your CV displays an adequate level of communication skills.",
-                            "Your CV could display more evidence of communication skills. Words such as 'conveyed', 'briefed' and 'discussed' are useful."]
-    output_Leadership = ["Your CV proves good leadership skills.",
-                         "Your CV may appear more attractive to employers if you describe evidence of leadership. Some useful words to consider are 'directed', 'managed', 'supervised' and 'initiative'."]
-    output_Teamwork = ["Your CV shows you are a team player.",
-                       "Your CV could stand to display more team-oriented language. Words such as 'collaborated, 'synergy' and 'cooperation' are good."]
     li1 = True
     li2 = True
     li3 = True
@@ -129,6 +120,13 @@ def word_matching_Softskill(dictObject):
     score = 0
     result = ["", "", "", ""]
 
+    listCommunication, listLeadership, listTeamwork, output_Communication, output_Leadership, output_Teamwork = jsonfile_reader_Advance('word_matching_softskill_keywords.json')
+    print(listCommunication)
+    print(listLeadership)
+    print(listTeamwork)
+    print(output_Communication)
+    print(output_Leadership)
+    print(output_Teamwork)
     for(key, value) in dictObject.items():
         #print(key)
         if li1:
