@@ -1,4 +1,3 @@
-
 import io
 import pdfminer
 from pdfminer.converter import *
