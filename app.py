@@ -49,7 +49,7 @@ def process():
         f = request.files['cvfile']
 
         # TODO: testing getting input
-        t = request.form['essential_skills']
+        t = request.form['user_type']
         print(t)
 
         #Dropdown menu selection
@@ -134,4 +134,4 @@ def sw():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
