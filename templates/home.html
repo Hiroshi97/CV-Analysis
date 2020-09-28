@@ -72,32 +72,6 @@
   </div>
   <form action="api/result" method="POST" id="uploadForm" enctype="multipart/form-data">
 
-    <div class="input">
-      <div class="card card-4">
-        <div class="card-body">
-          <h2 class="title">Brief Job Requirements</h2>
-          <label for="essential_skills">Essesntial Skills</label>
-          <input type="text" class="form-control" id="essential_skills"/>
-
-          <label for="soft_skills">Soft Skills</label>
-          <input type="text" class="form-control" id="soft_skills" />
-
-          <label for="others">Others</label>
-          <input type="text" class="form-control" id="others" />
-
-          <label for="job_type">Type of Industry</label>
-          <select class="form-control" name="job_type">
-            <option value="it_keywords.json">IT</option>
-            <option value="healthcare_keywords.json">Medical</option>
-            <option value="engineering_keywords.json">Engineering</option>
-            <option value="education_keywords.json">Education</option>
-            <option value="creative_keywords.json">Design</option>
-          </select>
-        </div>
-      </div>
-    </div>
-
-
     <div class="upload">
       <div class="upload-files">
         <header>
@@ -107,6 +81,45 @@
             <span class="load">load</span>
           </p>
         </header>
+
+        <div class="input">
+                        
+          <div class="form-select">
+            <label for="job_type">Type of Industry</label>
+            <select class="form-control" name="job_type">
+              <option value="accounting.json"> Accounting and Finance</option>
+              <option value="creative.json">Design and Cultural</option>
+              <option value="engineering.json">Engineering and Scientific</option>
+              <option value="education.json">Education and Learning</option>
+              <option value="healthcare.json">Healthcare and Human Services</option>                              
+              <option value="hospitality.json">Food Service and Hospitality</option>
+              <option value="hr.json">Human Resources</option>
+              <option value="it.json">IT (Information Technology)</option>
+              <option value="law.josn">Law Enforcement</option>
+              <option value="legal.json">Legal Advocacy</option>
+              <option value="logistics.json">Logistics and Purchasing</option>
+              <option value="maintenance.json">Maintenance and Repair</option>
+              <option value="management.json">Management</option>
+              <option value="manufacturing.json">Industrial Manufacturing and Warehousing</option>
+              <option value="nonprofit.json">NGO and Non-Profit</option>
+              <option value="officeadmin.json">Office and Administrative</option>
+              <option value="publicrelations.json">Public Relations</option>
+              <option value="realestate.json">Real Estate and Construction</option>
+              <option value="retail.json">Retail and Customer Service</option>
+              <option value="sales.json">Sales and Marketing</option>
+              <option value="travel.json">Travel and Transportation</option>
+            </select>
+          </div>
+
+          <label style="padding-right: 5px">Choose user type: </label>
+            <label for="applicant"> Applicant</label>
+            <input type="radio" name="user_type" value="applicant" id="applicant" checked="true" class="form-radio"/>
+
+            <label for="admin"> Admin</label>
+            <input type="radio" name="user_type" value="admin" id="admin" id="admin" class="form-radio"/>
+
+        </div>
+        <hr style="width:80%"/>
         <div class="body" id="drop">
           <i class="fa fa-file-text-o pointer-none" aria-hidden="true"></i>
           <p class="pointer-none">
