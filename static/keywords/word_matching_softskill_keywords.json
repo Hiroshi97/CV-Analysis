@@ -1,0 +1,8 @@
+{
+    "listCommunication": ["communicated", "described", "explained", "conveyed", "reported", "presented", "expressed", "briefing", "briefed", "discussion"],
+    "listLeadership": ["lead", "leadership", "guided", "guide", "direct", "directed", "managed", "management", "orchestrated", "initiative", "supervised", "supervisor", "authority", "controlled", "administrative", "administration", "capacity"],
+    "listTeamwork": ["collaborated", "collaboration", "together", "team", "joint", "effort", "synergy", "cooperation", "cooperated", "assisted", "partnership", "team"],
+    "output_Communication": ["Your CV displays an adequate level of communication skills.", "Your CV could display more evidence of communication skills. Words such as 'conveyed', 'briefed' and 'discussed' are useful."],
+    "output_Leadership": ["Your CV proves good leadership skills.", "Your CV may appear more attractive to employers if you describe evidence of leadership. Some useful words to consider are 'directed', 'managed', 'supervised' and 'initiative'."],
+    "output_Teamwork": ["Your CV shows you are a team player.", "Your CV could stand to display more team-oriented language. Words such as 'collaborated, 'synergy' and 'cooperation' are good."]
+}

@@ -1,0 +1,7 @@
+{
+    "list1": ["career", "objective", "summary", "profile"],
+    "list2": ["elementary", "education", "qualification", "training", "academic", "GPA", "Bachelor", "degree", "master", "PhD", "high school", "diploma", "accociate degree", "TAFE", "certificates", "archiement"],
+    "list3": ["part-time", "employment", "Experience", "work", "placement", "internship", "professional", "volunteer", "practicums", "job"],
+    "list4": ["skill", "attribute", "strength", "key skills", "know", "knew","programming", "java", "language", "c#", "flask", "python", "AWS", "d3"],
+    "list5": ["referee", "reference"]
+}
