@@ -102,7 +102,7 @@ def process():
 
         #Count word frequency
         word_list = word_filter(word_frequency(text))
-        essential_section = word_matching(word_frequency(text))
+        essential_section = word_matching(word_frequency(text),t)
         word_count = "Word Count: " + str(word_count_num)
 
         #Four factors
