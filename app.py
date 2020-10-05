@@ -103,7 +103,7 @@ def process():
         brevity = [0, spellcheck[0], bpCounter[2],
                    word_count_result, bpQuantify]
         style = [essential_section[0], essential_section[1],
-                 essential_section[2], essential_section[3], datesorter.datefindersorter(text)]
+                 essential_section[2], essential_section[3], essential_section[4], essential_section[5], datesorter.datefindersorter(text)]
 
         soft_skills = word_matching_Softskill(word_frequency(text))
         length = [len(impact), len(brevity), len(style), len(soft_skills)]
