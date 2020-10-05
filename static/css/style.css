@@ -98,7 +98,7 @@ section {
   padding-top:40px;
   padding-left:40px;
   float: left;
-  width: 50%;
+  width: 60%;
   color: white;
   border: 2px dashed white;
   border-radius: 5%;
@@ -132,15 +132,64 @@ section {
 }
 
 #uploadForm {
-  padding-left: 60%;
+  padding-left: 30%;
   padding-top: 10px;
   width: 100%;
 }
 
-.upload {
-  position: relative;
+.input {
+  margin-top: 20px;
+  margin-bottom: 2%;
+  width: 100%;
+  margin-left: 5%;
+  
+}
+
+.form-select {
   width: 70%;
-  min-height: 445px;
+  margin-bottom: 20px;
+}
+
+.form-radio {
+  margin-right: 5px;
+  
+}
+/* ==========================================================================
+   #CARD
+   ========================================================================== */
+.card {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  background: #fff;
+}
+
+.card-4 {
+  background: #fff;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  -webkit-box-shadow: 0px 8px 20px 0px rgba(0, 0, 0, 0.15);
+  -moz-box-shadow: 0px 8px 20px 0px rgba(0, 0, 0, 0.15);
+  box-shadow: 0px 8px 20px 0px rgba(0, 0, 0, 0.15);
+}
+
+.card-4 .card-body {
+  padding: 57px 65px;
+  padding-bottom: 65px;
+}
+
+@media (max-width: 767px) {
+  .card-4 .card-body {
+    padding: 50px 40px;
+  }
+}
+
+.upload {
+  margin-left: 5%;
+  position: relative;
+  width: 45%;
+  min-height: 550px;
   box-sizing: border-box;
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
@@ -151,7 +200,7 @@ section {
   -webkit-transform: translateY(20px);
   transform: translateY(20px);
   opacity: 0;
-  margin: auto;
+  /* margin: auto; */
   float: left;
   height: 200px;
 }
@@ -196,7 +245,7 @@ section {
 }
 .upload .upload-files .body {
   text-align: center;
-  padding: 50px 0;
+  padding: 20px 0;
   padding-bottom: 30px;
 }
 .upload .upload-files .body.hidden {
