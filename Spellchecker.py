@@ -25,7 +25,7 @@ def spellchecker(text):
     cleanList = shortenedWords.copy()
 
     if not cleanList:
-        output = "Your resume is free of spelling errors! Congratulations!"
+        output = "Your resume has no spelling errors."
     else:
         output = "You may have misspelled the following words: " + \
             '\n' + ', '.join(cleanList)

@@ -72,7 +72,7 @@ def word_matching(dictObject, t):
 
         if li4:
             li4, score, result[4] = word_match(
-                key, list4, li4, score, "Skill")
+                key, list4, li4, score, "Skills")
             if li4 is False:
                 highlight.append(key)
 

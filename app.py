@@ -49,8 +49,8 @@ def process():
         f = request.files['cvfile']
 
         # TODO: testing getting input
-        t = request.form['user_type']
-        print(t)
+        user = request.form['user_type']
+        print(user)
 
         #Dropdown menu selection
         t = request.form['job_type']
@@ -64,10 +64,19 @@ def process():
         filename = "File name: " + f.filename
         filesize = "File size: " + str(int(len(f.read())/1024)) + "kb"
         text = extractTextFromPDF(f)
-
+        
         # Filter invisible text
-        invisible_text = filterHiddenText(f)
-        print(invisible_text)
+        if user == "admin":
+            invisible_text = filterHiddenText(f)
+            invisible_textlist = []
+
+            for txt in range(len(invisible_text[0])):
+                invisible_textlist.append(invisible_text[0][txt]['text'])
+            
+            invisible_output = "There are " + str(len(invisible_textlist)) + " invisible sentences."
+            print(invisible_textlist)
+        elif user == "applicant":
+            invisible_textlist = False
 
         #scoring system
         if int(len(f.read())/1024) > 20000:
@@ -106,7 +115,10 @@ def process():
         word_count = "Word Count: " + str(word_count_num)
 
         #Four factors
-        impact = [0, filename, filesize, word_count, fps[0], fps[1]]
+        if invisible_textlist:
+            impact = [0, invisible_output, filename, filesize, word_count, fps[0], fps[1]]
+        else:
+            impact = [0, filename, filesize, word_count, fps[0], fps[1]]
 
         brevity = [0, spellcheck[0], bpCounter[2],
                    word_count_result, bpQuantify]
@@ -121,9 +133,13 @@ def process():
         final_overall_scored()
         #Highlighted files
         pdfstrings = []
-        pdfstrings.append(pdfstring)  # Original file
+        if invisible_textlist:
+            pdfstrings.append(highlightText(invisible_textlist, f, (0, 1, 0)))
+        else:
+            pdfstrings.append(pdfstring)
         pdfstrings.append(highlightText(spellcheck[1], f, (1, 0, 0)))
         pdfstrings.append(highlightText(essential_section[6], f, (0, 1, 0)))
+        pdfstrings.append(pdfstring)
 
         return render_template("result.html", impact=impact, brevity=brevity, style=style, soft_skills=soft_skills, pdfstrings=pdfstrings, length=length)
     return redirect(url_for('index'))
