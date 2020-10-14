@@ -64,6 +64,7 @@ def filterHiddenText(f):
     textFilter = InvisibleTextFilter(deltaEThreshold= 25)
     result = []
     for page in doc:
-        result.append(textFilter.getInvisibleText(page))
+        if textFilter.getInvisibleText(page):
+            result.extend(textFilter.getInvisibleText(page))
 
     return result

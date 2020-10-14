@@ -71,9 +71,7 @@ def process():
             invisible_textlist = []
             print(invisible_text)
             for item in invisible_text:
-                if len(item) > 0:
-                    for htext in item:
-                        invisible_textlist.append(htext.get('text'))
+                invisible_textlist.append(item.get('text'))
             
             invisible_output = "There are " + str(len(invisible_textlist)) + " invisible sentences."
             print(invisible_textlist)
