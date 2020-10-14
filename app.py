@@ -69,9 +69,11 @@ def process():
         if user == "admin":
             invisible_text = filterHiddenText(f)
             invisible_textlist = []
-
-            for txt in range(len(invisible_text[0])):
-                invisible_textlist.append(invisible_text[0][txt]['text'])
+            print(invisible_text)
+            for item in invisible_text:
+                if len(item) > 0:
+                    for htext in item:
+                        invisible_textlist.append(htext.get('text'))
             
             invisible_output = "There are " + str(len(invisible_textlist)) + " invisible sentences."
             print(invisible_textlist)

@@ -10069,6 +10069,10 @@ button.bg-alternate:focus {
 	font-weight: 400 !important
 }
 
+.font-weight-norbo {
+	font-weight: 500 !important
+}
+
 .font-weight-bold {
 	font-weight: 700 !important
 }
@@ -24625,4 +24629,9 @@ a.fc-more:hover {
 	bottom: 5px;
 	box-shadow: 5px 4px #CCCCCC;
 	transition: box-shadow 0.3s ease-in-out;
+	font-weight: 700;
+	background-color: #FBF7F7;
+}
+.list-group-item {
+	font-weight: 500;
 }
