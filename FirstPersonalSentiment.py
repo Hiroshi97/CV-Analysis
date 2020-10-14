@@ -25,10 +25,10 @@ def firstPersonSentiment(text):
 
     processed = "Your CV has " + \
         str(countFirstPerson) + \
-        " instances of first-person usage. A good CV should have no instances, as it seems unproffesional."
+        " instances of first-person usages such as 'I', 'Me' and much more."
 
     nounverb = "There were " + str(countNoun) + " nouns in your CV. It contains " + str(
-        countActionVerb) + " action verbs. Action verbs make you stand out as a candidate!"
+        countActionVerb) + " action verbs."
 
     #scoring system
     if countFirstPerson > 5:

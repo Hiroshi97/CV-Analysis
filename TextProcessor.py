@@ -61,7 +61,7 @@ def highlightText(textArr, f, color):
 def filterHiddenText(f):
     f.seek(0)
     doc = fitz.open(stream=bytearray(f.read()), filetype='pdf')
-    textFilter = InvisibleTextFilter()
+    textFilter = InvisibleTextFilter(deltaEThreshold= 25)
     result = []
     for page in doc:
         result.append(textFilter.getInvisibleText(page))

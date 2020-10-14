@@ -24,7 +24,7 @@ var impact_button = document.getElementsByClassName(
   
   impact_button.onclick = function () {
 	var title = document.getElementsByClassName("card-header-title")[0];
-	title.innerText = "Impact";
+	title.innerText = "File Information";
 	setNone();
 	document.getElementById('impact-section').style.display = "block";
 	preview[0].src = "data:application/pdf;base64," + pdfStrings[0];
@@ -32,7 +32,7 @@ var impact_button = document.getElementsByClassName(
 
   brevity_button.onclick = function () {
 	var title = document.getElementsByClassName("card-header-title")[0];
-	title.innerText = "Brevity";
+	title.innerText = "Quality";
 	setNone();
 	document.getElementById('brevity-section').style.display = "block";
 	preview[0].src = "data:application/pdf;base64," + pdfStrings[1];
@@ -40,7 +40,7 @@ var impact_button = document.getElementsByClassName(
 
   style_button.onclick = function () {
 	var title = document.getElementsByClassName("card-header-title")[0];
-	title.innerText = "Style";
+	title.innerText = "Essential Sections";
 	setNone();
 	document.getElementById('style-section').style.display = "block";
 	preview[0].src = "data:application/pdf;base64, " + pdfStrings[2];
@@ -48,10 +48,10 @@ var impact_button = document.getElementsByClassName(
 
   soft_skills_button.onclick = function () {
 	var title = document.getElementsByClassName("card-header-title")[0];
-	title.innerText = "Soft Skills";
+	title.innerText = "Section Analysis";
 	setNone();
 	document.getElementById('soft-skills-section').style.display = "block";
-	preview[0].src = "data:application/pdf;base64," + pdfStrings[0];
+	preview[0].src = "data:application/pdf;base64," + pdfStrings[3];
   };
 
   //Default value

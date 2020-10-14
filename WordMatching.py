@@ -30,7 +30,7 @@ def word_match(key,list,li,score,output):
 # it will find the word that match the lists and return related result
 
 
-def word_matching(dictObject):
+def word_matching(dictObject, t):
     # dictObject variable must come from word_frequency result
     list1, list2, list3, list4, list5 = jsonfile_reader_Advance('word_matching_keywords.json')
     print(list1)
@@ -38,6 +38,9 @@ def word_matching(dictObject):
     print(list3)
     print(list4)
     print(list5)
+    list4 += jsonfile_reader(t)
+    print(t)
+    print(list4)
     li1 = True
     li2 = True
     li3 = True
@@ -69,7 +72,7 @@ def word_matching(dictObject):
 
         if li4:
             li4, score, result[4] = word_match(
-                key, list4, li4, score, "Skill")
+                key, list4, li4, score, "Skills")
             if li4 is False:
                 highlight.append(key)
 
