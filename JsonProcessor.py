@@ -6,7 +6,7 @@ import os
 def jsonfile_reader(jsonFile):
     emptyList = []
     script_dir = os.path.dirname(__file__)
-    fileName = 'static/keywords/' + jsonFile
+    fileName = 'static\keywords\\' + jsonFile
     file_path = os.path.join(script_dir, fileName)
     print(file_path)
     with open(file_path) as f:
@@ -23,7 +23,7 @@ def jsonfile_reader(jsonFile):
 def jsonfile_reader_Advance(jsonFile):
     emptyList = []
     script_dir = os.path.dirname(__file__)
-    fileName = 'static/keywords/' + jsonFile
+    fileName = 'static\keywords\\' + jsonFile
     file_path = os.path.join(script_dir, fileName)
     with open(file_path) as f:
         data = json.load(f)

@@ -30,7 +30,7 @@ from flask_sslify import SSLify
 import base64
 
 app = Flask(__name__)
-sslify = SSLify(app)
+#sslify = SSLify(app)
 
 #CORS
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
@@ -69,11 +69,9 @@ def process():
         if user == "admin":
             invisible_text = filterHiddenText(f)
             invisible_textlist = []
-            print(invisible_text)
-            for item in invisible_text:
-                if len(item) > 0:
-                    for htext in item:
-                        invisible_textlist.append(htext.get('text'))
+
+            for txt in range(len(invisible_text[0])):
+                invisible_textlist.append(invisible_text[0][txt]['text'])
             
             invisible_output = "There are " + str(len(invisible_textlist)) + " invisible sentences."
             print(invisible_textlist)

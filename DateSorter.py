@@ -8,10 +8,10 @@ class DateSorter():
         badresult = "Your dates are not in the correct yearly order. Employers like to see the most recent work and study experience first."  # score down?
         monthresult = "Your dates are not in the correct monthly order. Employers like to see the most recent work and study experience first."  # score down?
 
-        regex1 = r'(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s\d{4}'
-        regex2 = r'(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s\d{2}'
-        regex3 = r'(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\s\d{4}'
-        regex4 = r'(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\s\d{2}'
+        regex1 = r'(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\s\d{4}'
+        regex2 = r'(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\s\d{2}'
+        regex3 = r'(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec|JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\s\d{4}'
+        regex4 = r'(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec|JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\s\d{2}'
         regex5 = r'(?:january|february|march|april|may|june|july|august|september|october|november|december)\s\d{4}'
         regex6 = r'(?:january|february|march|april|may|june|july|august|september|october|november|december)\s\d{2}'
         regex7 = r'(?:January|February|March|April|May|June|July|August|September|October|November|December)\s\d{2}'
@@ -22,6 +22,7 @@ class DateSorter():
         regex12 = r'[\d]{1,2}-[\d]{1,2}-[\d]{2}'  # dd-mm-yyyy or d-m-yyyy
         #regex13 = r'\s[\d]{2}\s'
         regex14 = r'[\d]{4}'
+        regexTime =r'(19[89][0-9]|20[0-4][0-9]|2050)'
 
         dates1 = re.findall(regex1, text)
         dates2 = re.findall(regex2, text)
@@ -37,6 +38,7 @@ class DateSorter():
         dates12 = re.findall(regex12, text)
         #dates13 = re.findall(regex13, text)
         dates14 = re.findall(regex14, text)
+        datesTime =re.findall(regexTime, text)
         
         if dates1:
 
@@ -61,9 +63,13 @@ class DateSorter():
             flag = 0
 
             both_months2 = both_months.copy()
-
-            both_months_sorted = both_months2.sort(
-                key=lambda date: datetime.strptime(date, '%B %Y'))  # this format changes
+            
+            try:
+                
+                both_months_sorted = both_months2.sort(
+                    key=lambda date: datetime.strptime(date, '%b %Y'))  # this format changes
+            except:
+                return "Your dates could not be found."
 
             if (both_months == both_months2):
                 flag = 0
@@ -102,9 +108,12 @@ class DateSorter():
             flag = 0
 
             both_months2 = both_months.copy()
-
-            both_months_sorted = both_months2.sort(
-                key=lambda date: datetime.strptime(date, '%b %y'))  # this format changes
+            try:
+                
+                both_months_sorted = both_months2.sort(
+                    key=lambda date: datetime.strptime(date, '%b %y'))  # this format changes
+            except:
+                return "Your dates could not be found."
 
             if (both_months == both_months2):
                 flag = 0
@@ -143,9 +152,12 @@ class DateSorter():
             flag = 0
 
             both_months2 = both_months.copy()
-
-            both_months_sorted = both_months2.sort(
-                key=lambda date: datetime.strptime(date, '%b %Y'))  # this format changes
+            try:
+                
+                both_months_sorted = both_months2.sort(
+                    key=lambda date: datetime.strptime(date, '%b %Y'))  # this format changes
+            except:
+                return "Your dates could not be found."
 
             if (both_months == both_months2):
                 flag = 0
@@ -171,9 +183,12 @@ class DateSorter():
             flag = 0
 
             both_months2 = both_months.copy()
-
-            both_months_sorted = both_months2.sort(
-                key=lambda date: datetime.strptime(date, '%b %y'))  # this format changes
+            try:
+                
+                both_months_sorted = both_months2.sort(
+                    key=lambda date: datetime.strptime(date, '%b %y'))  # this format changes
+            except:
+                return "Your dates could not be found."
 
             if (both_months == both_months2):
                 flag = 0
@@ -211,9 +226,12 @@ class DateSorter():
             flag = 0
 
             both_months2 = both_months.copy()
-
-            both_months_sorted = both_months2.sort(
-                key=lambda date: datetime.strptime(date, '%B %Y'))  # this format changes
+            try:
+                
+                both_months_sorted = both_months2.sort(
+                    key=lambda date: datetime.strptime(date, '%B %Y'))  # this format changes
+            except:
+                return "Your dates could not be found."
 
             if (both_months == both_months2):
                 flag = 0
@@ -252,10 +270,13 @@ class DateSorter():
             flag = 0
 
             both_months2 = both_months.copy()
-
-            both_months_sorted = both_months2.sort(
-                key=lambda date: datetime.strptime(date, '%B %y'))  # this format changes
-
+            try:
+                
+                both_months_sorted = both_months2.sort(
+                    key=lambda date: datetime.strptime(date, '%B %y'))  # this format changes
+            except:
+                return "Your dates could not be found."
+            
             if (both_months == both_months2):
                 flag = 0
             elif (both_months != both_months2):
@@ -293,9 +314,13 @@ class DateSorter():
             flag = 0
 
             both_months2 = both_months.copy()
-
-            both_months_sorted = both_months2.sort(
-                key=lambda date: datetime.strptime(date, '%B %y'))  # this format changes
+            
+            try:
+                
+                both_months_sorted = both_months2.sort(
+                    key=lambda date: datetime.strptime(date, '%B %y'))  # this format changes
+            except:
+                return "Your dates could not be found."
 
             if (both_months == both_months2):
                 flag = 0
@@ -338,10 +363,10 @@ class DateSorter():
 
                 both_months_sorted = both_months2.sort(
                     key=lambda date: datetime.strptime(date, '%B %Y'))  # this format changes
+            
 
             except:
-                both_months_sorted2 = both_months3.sort(
-                    key=lambda date: datetime.strptime(date, '%b %Y'))
+                return "Your dates could not be found."
 
             if (both_months == both_months2):
                 flag = 0
@@ -385,9 +410,13 @@ class DateSorter():
             flag = 0
 
             both_months2 = both_months.copy()
+            try:
+            
 
-            both_months_sorted = both_months2.sort(
-                key=lambda date: datetime.strptime(date, '%b %Y'))  # this format changes
+                both_months_sorted = both_months2.sort(
+                    key=lambda date: datetime.strptime(date, '%b %Y'))  # this format changes
+            except:
+                return "Your dates could not be found."
 
             if (both_months == both_months2):
                 flag = 0
@@ -426,9 +455,13 @@ class DateSorter():
             flag = 0
 
             both_months2 = both_months.copy()
-
-            both_months_sorted = both_months2.sort(
-                key=lambda date: datetime.strptime(date, '%b %y'))  # this format changes
+            
+            try:
+                
+                both_months_sorted = both_months2.sort(
+                    key=lambda date: datetime.strptime(date, '%b %y'))  # this format changes
+            except:
+                return "Your dates could not be found."
 
             if (both_months == both_months2):
                 flag = 0
@@ -467,9 +500,11 @@ class DateSorter():
             flag = 0
 
             both_months2 = both_months.copy()
-
-            both_months_sorted = both_months2.sort(
-                key=lambda date: datetime.strptime(date, '%x'))  # this format changes
+            try:
+                both_months_sorted = both_months2.sort(
+                    key=lambda date: datetime.strptime(date, '%x'))  # this format changes
+            except:
+                return "Your dates could not be found."
 
             if (both_months == both_months2):
                 flag = 0
@@ -508,9 +543,12 @@ class DateSorter():
             flag = 0
 
             both_months2 = both_months.copy()
+            try:
 
-            both_months_sorted = both_months2.sort(
-                key=lambda date: datetime.strptime(date, '%d-%m-%Y '))  # this format changes
+                both_months_sorted = both_months2.sort(
+                    key=lambda date: datetime.strptime(date, '%d-%m-%Y '))  # this format changes
+            except:
+                return "Your dates could not be found."
 
             if (both_months == both_months2):
                 flag = 0
@@ -550,8 +588,12 @@ class DateSorter():
 
             both_months2 = both_months.copy()
 
-            both_months_sorted = both_months2.sort(
-                key=lambda date: datetime.strptime(date, '%Y'))  # this format changes
+            try:
+
+                both_months_sorted = both_months2.sort(
+                    key=lambda date: datetime.strptime(date, '%Y'))  # this format changes
+            except:
+                return "Your dates could not be found."
 
             if (both_months == both_months2):
                 flag = 0
@@ -566,3 +608,50 @@ class DateSorter():
                 return result
             else:
                 return badresult
+            
+        if datesTime:
+
+            def split_list(x):
+                return [datesTime[i:i+x] for i in range(0, len(datesTime), x)]
+
+            try:
+                
+                splitted_list = split_list(2)
+                num_list = list(map(lambda sub: int(
+                    ''.join([ele for ele in sub if ele.isnumeric()])), splitted_list[0]))
+                second_num_list = list(map(lambda sub: int(
+                    ''.join([ele for ele in sub if ele.isnumeric()])), splitted_list[1]))
+            except IndexError as e:
+                return "Your dates could not be found."
+
+            month_list = splitted_list[0][1]
+            second_month_list = splitted_list[1][0]
+            both_months = []
+            both_months.append(month_list)
+            both_months.append(second_month_list)
+            flag = 0
+
+            both_months2 = both_months.copy()
+
+            try:
+
+                both_months_sorted = both_months2.sort(
+                    key=lambda date: datetime.strptime(date, '%Y'))  # this format changes
+            except:
+                return "Your dates could not be found."
+
+            if (both_months == both_months2):
+                flag = 0
+            elif (both_months != both_months2):
+                flag = 1
+
+            if (num_list[1] > second_num_list[0]):
+                return result
+            elif (num_list[1] == second_num_list[0]) & (flag == 0):
+                return monthresult
+            elif (num_list[1] == second_num_list[0]) & (flag == 1):
+                return result
+            else:
+                return badresult
+            
+            
