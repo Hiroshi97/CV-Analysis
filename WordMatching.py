@@ -100,7 +100,7 @@ def word_match_Softskill(key, list, li, score, output, counter):
             print(key)
             break
 
-        if counter >= (len(list)/3):
+        if counter >= (len(list)/5):
             li = False
             score += 1
             print("score: ", score)
