@@ -30,7 +30,7 @@ from flask_sslify import SSLify
 import base64
 
 app = Flask(__name__)
-#sslify = SSLify(app)
+sslify = SSLify(app)
 
 #CORS
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
