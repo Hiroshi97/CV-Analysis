@@ -47,6 +47,6 @@ def quantifyBulletPoints(text):
         if(re.search(quantifyRegEx, i)):
             quantifiedCount += 1
     result = "Out of " + str(bulletPointCount) + " bullet points in your CV, " + \
-        str(quantifiedCount) + " has been quantified."
+        str(quantifiedCount) + " have been quantified. Statistics after bullet points are common practice."
 
     return result
